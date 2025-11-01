@@ -1,0 +1,73 @@
+/* Gradient title animation */
+.gradient-title {
+    background: linear-gradient(90deg, #4f46e5, #3b82f6, #10b981);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientAnimation 6s ease infinite;
+  }
+  
+  @keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  /* Hero image wrapper with scroll effect */
+  .hero-image-wrapper {
+    perspective: 1500px;
+  }
+  
+  .hero-image {
+    transition: transform 0.6s ease, box-shadow 0.6s ease;
+  }
+  
+  .hero-image.scrolled {
+    transform: rotateY(10deg) scale(1.05);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Button hover effects */
+  .button-lg {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .button-lg::after {
+    content: "";
+    position: absolute;
+    left: -50%;
+    top: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(45deg) scale(0);
+    transition: transform 0.5s ease;
+  }
+  
+  .button-lg:hover::after {
+    transform: rotate(45deg) scale(1);
+  }
+  
+  .button-outline:hover {
+    background: #4f46e5;
+    color: white;
+  }
+  
+  /* Subtext animation */
+  .hero-subtext {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 1s ease forwards;
+    animation-delay: 0.5s;
+  }
+  
+  @keyframes fadeUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  
