@@ -49,38 +49,48 @@ export function AccountCard({ account }) {
     }
   }, [error]);
 
+  
   return (
-    <Card className="hover:shadow-md transition-shadow group relative">
+    <Card className="group relative bg-gradient-to-br from-slate-900 via-blue-900 to-slate-950
+ border border-slate-700/60 rounded-2xl hover:border-orange-400/60 hover:shadow-[0_0_25px_-5px_rgba(251,146,60,0.4)] transition-all duration-300 ease-out">
       <Link href={`/account/${id}`}>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium capitalize">
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <CardTitle className="text-base font-semibold capitalize text-slate-100 group-hover:text-orange-400 transition-colors duration-200">
             {name}
           </CardTitle>
           <Switch
             checked={isDefault}
             onClick={handleDefaultChange}
             disabled={updateDefaultLoading}
+            className="data-[state=checked]:bg-orange-500"
           />
         </CardHeader>
+  
         <CardContent>
-          <div className="text-2xl font-bold">
+          <div className="text-3xl font-bold text-transparent bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text drop-shadow-sm">
             ${parseFloat(balance).toFixed(2)}
           </div>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-slate-400 tracking-wide mt-1">
             {type.charAt(0) + type.slice(1).toLowerCase()} Account
           </p>
         </CardContent>
-        <CardFooter className="flex justify-between text-sm text-muted-foreground">
-          <div className="flex items-center">
-            <ArrowUpRight className="mr-1 h-4 w-4 text-green-500" />
+  
+        <CardFooter className="flex justify-between text-sm text-slate-400 border-t border-slate-700/50 pt-3 mt-2">
+          <div className="flex items-center hover:text-green-400 transition-colors duration-200">
+            <ArrowUpRight className="mr-1 h-4 w-4 text-green-500 group-hover:animate-pulse" />
             Income
           </div>
-          <div className="flex items-center">
-            <ArrowDownRight className="mr-1 h-4 w-4 text-red-500" />
+          <div className="flex items-center hover:text-red-400 transition-colors duration-200">
+            <ArrowDownRight className="mr-1 h-4 w-4 text-red-500 group-hover:animate-pulse" />
             Expense
           </div>
         </CardFooter>
       </Link>
+  
+      {/* Subtle glowing accent ring */}
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-orange-500/10 to-amber-500/10 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-300 pointer-events-none"></div>
     </Card>
   );
+  
+
 }

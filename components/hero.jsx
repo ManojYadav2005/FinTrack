@@ -43,26 +43,27 @@ const HeroSection = () => {
             </Button>
           </Link>
           <Link href="https://www.youtube.com/roadsidecoder">
-            <Button size="lg" variant="outline" className="px-8 button-lg button-outline">
+            {/* <Button size="lg" variant="outline" className="px-8 button-lg button-outline">
               Watch Demo
-            </Button>
+            </Button> */}
           </Link>
         </div>
         <div className="hero-image-wrapper mt-5 md:mt-0">
-          <div ref={imageRef} className="hero-image">
-            <Image
-              src="/banner.jpeg"
-              width={1280}
-              height={720}
-              alt="Dashboard Preview"
-              className="rounded-lg shadow-2xl border mx-auto"
-              priority
-            />
-          </div>
+        <div ref={imageRef} className="hero-image group transition-all duration-700">
+  <Image
+    src="/banner.jpeg"
+    width={700}
+    height={520}
+    alt="Dashboard Preview"
+    className="rounded-2xl border mx-auto shadow-xl transition-all duration-700 group-hover:scale-105 group-hover:shadow-2xl group-hover:shadow-cyan-500/30"
+    priority
+  />
+</div>
+
         </div>
       </div>
     </section>
-  );
+  ); 
 };
 
 export default HeroSection;

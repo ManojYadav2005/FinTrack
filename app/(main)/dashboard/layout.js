@@ -5,11 +5,11 @@ import { Suspense } from "react";
 export default function Layout() {
   return (
     <div className="px-5">
-      <div className="flex items-center justify-between mb-5">
-        <h1 className="text-6xl font-bold tracking-tight gradient-title">
-          Dashboard
-        </h1>
-      </div>
+<div className="flex items-center justify-between mb-5">
+  <h1 className="text-6xl font-bold tracking-tight bg-gradient-to-r from-orange-500 via-pink-500 to-fuchsia-600 bg-clip-text text-transparent drop-shadow-md">
+    Dashboard
+  </h1>
+</div>
       <Suspense
         fallback={<BarLoader className="mt-4" width={"100%"} color="#9333ea" />}
       >
