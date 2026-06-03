@@ -139,5 +139,11 @@ ALTER TABLE "transactions" ADD CONSTRAINT "transactions_accountId_fkey" FOREIGN 
 -- AddForeignKey
 ALTER TABLE "budgets" ADD CONSTRAINT "budgets_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
--- AddForeignKey
+--AddForeignKey
 ALTER TABLE "budgets" ADD CONSTRAINT "budgets_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "categories"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+
+
+
+
+
