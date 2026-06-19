@@ -12,7 +12,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { format, subDays, startOfDay, endOfDay } from "date-fns";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -64,78 +63,95 @@ export function AccountChart({ transactions }) {
     );
   }, [filteredData]);
 
+  const net = totals.income - totals.expense;
+
   return (
-    <Card className="bg-gradient-to-br from-purple-50 to-purple-100 shadow-lg border-0 rounded-2xl overflow-hidden">
-      <CardHeader className="flex flex-col sm:flex-row items-center justify-between space-y-2 sm:space-y-0 pb-6 px-6 bg-purple-200/50 rounded-t-2xl">
-        <CardTitle className="text-lg font-semibold text-purple-800">
-          Transaction Overview
-        </CardTitle>
+    <div className="terminal-card overflow-hidden">
+      {/* Header */}
+      <div className="px-5 py-4 border-b border-slate-800 bg-slate-900/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <span className="text-xs font-mono text-slate-500 uppercase tracking-widest">VIEW:</span>
+          <span className="text-xs font-mono text-cyan-400">transaction_overview</span>
+        </div>
         <Select defaultValue={dateRange} onValueChange={setDateRange}>
-          <SelectTrigger className="w-[150px] bg-white shadow-md border-none rounded-lg">
+          <SelectTrigger className="w-full sm:w-[160px] h-8 bg-slate-800 border-slate-700 text-slate-300 text-xs font-mono focus:ring-1 focus:ring-blue-500 transition-colors">
             <SelectValue placeholder="Select range" />
           </SelectTrigger>
-          <SelectContent className="bg-white shadow-lg rounded-lg">
+          <SelectContent className="bg-slate-900 border-slate-700 text-slate-200">
             {Object.entries(DATE_RANGES).map(([key, { label }]) => (
-              <SelectItem key={key} value={key}>
+              <SelectItem key={key} value={key} className="text-xs font-mono hover:bg-slate-800">
                 {label}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
-      </CardHeader>
-      <CardContent className="px-6">
+      </div>
+
+      <div className="p-5">
         {/* Totals */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6 text-center">
-          <div className="bg-white p-4 rounded-xl shadow hover:shadow-xl transition-all duration-300">
-            <p className="text-sm text-purple-700 font-medium">Total Income</p>
-            <p className="text-xl font-bold text-green-600">${totals.income.toFixed(2)}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          <div className="bg-slate-900/60 rounded-xl p-4 border border-slate-800">
+            <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-1">Total Income</p>
+            <p className="text-2xl font-bold font-mono text-green-400">${totals.income.toFixed(2)}</p>
           </div>
-          <div className="bg-white p-4 rounded-xl shadow hover:shadow-xl transition-all duration-300">
-            <p className="text-sm text-purple-700 font-medium">Total Expenses</p>
-            <p className="text-xl font-bold text-red-600">${totals.expense.toFixed(2)}</p>
+          <div className="bg-slate-900/60 rounded-xl p-4 border border-slate-800">
+            <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-1">Total Expenses</p>
+            <p className="text-2xl font-bold font-mono text-red-400">${totals.expense.toFixed(2)}</p>
           </div>
-          <div className="bg-white p-4 rounded-xl shadow hover:shadow-xl transition-all duration-300">
-            <p className="text-sm text-purple-700 font-medium">Net</p>
-            <p
-              className={`text-xl font-bold ${
-                totals.income - totals.expense >= 0 ? "text-green-600" : "text-red-600"
-              }`}
-            >
-              ${(totals.income - totals.expense).toFixed(2)}
+          <div className="bg-slate-900/60 rounded-xl p-4 border border-slate-800">
+            <p className="text-[10px] font-mono text-slate-500 uppercase tracking-widest mb-1">Net Balance</p>
+            <p className={`text-2xl font-bold font-mono ${net >= 0 ? "text-green-400" : "text-red-400"}`}>
+              ${net.toFixed(2)}
             </p>
           </div>
         </div>
 
         {/* Chart */}
-        <div className="h-[350px] bg-white rounded-2xl shadow-inner p-4">
+        <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={filteredData} margin={{ top: 10, right: 15, left: 15, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="4 4" vertical={false} stroke="#ddd" />
-              <XAxis dataKey="date" fontSize={13} tickLine={false} axisLine={{ stroke: "#ccc" }} />
+            <BarChart data={filteredData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1e293b" />
+              <XAxis 
+                dataKey="date" 
+                fontSize={12} 
+                fontFamily="monospace"
+                tickLine={false} 
+                axisLine={{ stroke: "#334155" }} 
+                tick={{ fill: "#64748b" }}
+                dy={10}
+              />
               <YAxis
-                fontSize={13}
+                fontSize={12}
+                fontFamily="monospace"
                 tickLine={false}
-                axisLine={{ stroke: "#ccc" }}
+                axisLine={{ stroke: "#334155" }}
                 tickFormatter={(value) => `$${value}`}
+                tick={{ fill: "#64748b" }}
+                dx={-10}
               />
               <Tooltip
                 formatter={(value) => [`$${value}`, undefined]}
                 contentStyle={{
-                  backgroundColor: "#f9fafb",
-                  border: "1px solid #e5e7eb",
-                  borderRadius: "0.5rem",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                  backgroundColor: "#0d1323",
+                  border: "1px solid #263045",
+                  borderRadius: "8px",
+                  color: "#e2e8f0",
+                  fontSize: "12px",
+                  fontFamily: "JetBrains Mono, monospace",
                 }}
+                itemStyle={{ color: "#e2e8f0" }}
               />
-              <Legend verticalAlign="top" height={36} />
-              <Bar dataKey="income" name="Income" fill="#16a34a" radius={[6, 6, 0, 0]} />
-              <Bar dataKey="expense" name="Expense" fill="#dc2626" radius={[6,6,0,0]} />
+              <Legend 
+                verticalAlign="top" 
+                height={36} 
+                wrapperStyle={{ fontSize: "12px", fontFamily: "monospace", color: "#94a3b8" }}
+              />
+              <Bar dataKey="income" name="Income" fill="#22c55e" radius={[4, 4, 0, 0]} maxBarSize={40} />
+              <Bar dataKey="expense" name="Expense" fill="#ef4444" radius={[4, 4, 0, 0]} maxBarSize={40} />
             </BarChart>
           </ResponsiveContainer>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
-
-// 1 time change

@@ -1,7 +1,11 @@
 import React from "react";
 
 const MainLayout = ({ children }) => {
-  return <div className="container mx-auto my-32">{children}</div>;
+  return (
+    <div className="min-h-screen" style={{ background: "var(--bg-root)" }}>
+      {children}
+    </div>
+  );
 };
 
 export default MainLayout;

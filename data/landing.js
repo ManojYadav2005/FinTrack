@@ -3,140 +3,119 @@ import {
   Receipt,
   PieChart,
   CreditCard,
-  Globe,
   TrendingUp,
   Zap,
   Shield,
   Sparkles,
+  ScanLine,
 } from "lucide-react";
 
-// 🌍 Stats Data — glass-style with subtle gradients
+// Stats
 export const statsData = [
   {
     value: "2K+",
     label: "Active Users Empowered",
-    subtext: "Growing community of goal-driven users worldwide",
   },
   {
     value: "$1.5B+",
     label: "Money Managed Securely",
-    subtext: "Across personal, business, and joint accounts",
   },
   {
     value: "99.98%",
     label: "System Uptime",
-    subtext: "Always available, always reliable",
   },
   {
     value: "4.5★",
-    label: "User Experience Rating",
-    subtext: "Based on thousands of user reviews",
+    label: "User Rating",
   },
 ];
 
-// ⚡ Feature Data — fresh layout: vertical cards with icon circles
+// Features — SQL table rows
 export const featuresData = [
-  
-  // {
-  //   icon: <Receipt className="h-8 w-8 text-indigo-500" />,
-  //   title: "AI Receipt Scanner",
-  //   description:
-  //     "No typing needed — upload or snap, and we extract merchant names, totals, and dates automatically.",
-  //   accent: "from-indigo-500/10 to-cyan-500/10",
-  // },
-
   {
-    icon: <PieChart className="h-8 w-8 text-yellow-500" />,
+    icon: <ScanLine className="h-5 w-5 text-blue-400" />,
+    title: "AI Receipt Scanner",
+    description:
+      "Snap or upload a receipt — Gemini Vision auto-extracts amount, date, merchant and category. Zero manual typing.",
+  },
+  {
+    icon: <PieChart className="h-5 w-5 text-yellow-400" />,
     title: "Smart Category Breakdown",
     description:
-      "Auto-categorize your expenses and visualize how your money flows across categories.",
-    accent: "from-yellow-500/10 to-amber-500/10",
+      "Auto-categorize expenses and visualize money flow across all categories with interactive charts.",
   },
-
   {
-    icon: <PieChart className="h-8 w-8 text-indigo-500" />,
+    icon: <Zap className="h-5 w-5 text-purple-400" />,
     title: "Goal-Based Budgeting",
     description:
-      "Plan monthly budgets or long-term goals with predictive insights that adapt to your habits.",
-    accent: "from-purple-500/10 to-blue-500/10",
+      "Set monthly budgets with 80% threshold alerts sent directly to your email before you overspend.",
   },
   {
-    icon: <CreditCard className="h-8 w-8 text-indigo-500" />,
+    icon: <CreditCard className="h-5 w-5 text-cyan-400" />,
     title: "Unified Accounts View",
     description:
       "Connect multiple bank accounts and cards. Manage everything under one secure dashboard.",
-    accent: "from-blue-500/10 to-teal-500/10",
   },
-  
   {
-    icon: <Shield className="h-8 w-8 text-indigo-500" />,
+    icon: <Shield className="h-5 w-5 text-green-400" />,
     title: "Enterprise-Grade Privacy",
     description:
-      "Your data is encrypted end-to-end. We don’t sell, share, or compromise your security.",
-    accent: "from-indigo-500/10 to-purple-500/10",
+      "Your data is encrypted end-to-end. We don't sell, share, or compromise your security — ever.",
   },
   {
-    icon: <TrendingUp className="h-8 w-8 text-blue-500" />,
+    icon: <TrendingUp className="h-5 w-5 text-blue-400" />,
     title: "Expense Growth Tracking",
     description:
       "Understand your month-over-month growth patterns with clean trend visuals and analytics.",
-    accent: "from-blue-500/10 to-cyan-500/10",
-  },
-  {
-    icon: <BarChart3 className="h-8 w-8 text-cyan-500" />,
-    title: "Income & Expense Comparison",
-    description:
-      "Compare income sources against expenses to understand your true cash flow health.",
-    accent: "from-cyan-500/10 to-teal-500/10",
   },
 ];
 
-// 🧭 How It Works — timeline style
+// How it works
 export const howItWorksData = [
   {
-    step: "Step 1",
-    title: "Create Your Free Account",
+    step: "STEP_01",
+    title: "Create Your Account",
     description:
-      "Sign up securely and personalize your dashboard — no credit card required.",
-    icon: <CreditCard className="h-7 w-7 text-indigo-600" />,
+      "Sign up securely in seconds. No credit card required. Your dashboard is ready instantly.",
+    icon: <CreditCard className="h-6 w-6 text-blue-400" />,
   },
   {
-    step: "Step 2",
-    title: "Link & Sync Your Accounts",
+    step: "STEP_02",
+    title: "Add Transactions",
     description:
-      "Connect your banks and cards securely. Transactions sync automatically in real time.",
-    icon: <BarChart3 className="h-7 w-7 text-indigo-600" />,
+      "Log manually or scan receipts with AI. Gemini Vision reads the slip and fills all fields automatically.",
+    icon: <ScanLine className="h-6 w-6 text-blue-400" />,
   },
   {
-    step: "Step 3",
-    title: "Get Instant Insights",
+    step: "STEP_03",
+    title: "Get Smart Insights",
     description:
-      "See smart breakdowns of income, expenses, and budgets — AI-powered and beautifully visualized.",
-    icon: <Zap className="h-7 w-7 text-indigo-600" />,
+      "See instant breakdowns, budget alerts at 80%, and AI-powered insights in your email.",
+    icon: <Zap className="h-6 w-6 text-blue-400" />,
   },
 ];
 
-// 💬 Testimonials — more realistic, minimal layout with subtle personality
+// Testimonials
 export const testimonialsData = [
   {
     name: "Arjun Mehta",
-    role: "Tech Entrepreneur",
+    role: "tech_entrepreneur",
     image: "https://randomuser.me/api/portraits/men/43.jpg",
     quote:
-      "Welth helped me consolidate my personal and startup finances seamlessly. The insights feel human — not robotic.",
+      "FinTrack helped me consolidate my personal and startup finances seamlessly. The AI scanner saves me 30 minutes a day.",
   },
   {
     name: "Lisa Fernandez",
-    role: "Digital Nomad",
+    role: "digital_nomad",
     image: "https://randomuser.me/api/portraits/women/47.jpg",
     quote:
-      "Finally, a finance tool that doesn’t overwhelm me. I see where my money goes and where it *should* go next.",
+      "Finally, a finance tool that doesn't overwhelm me. The 80% budget alert caught me before I overspent — twice!",
   },
   {
     name: "Rahul Bansal",
-    role: "Investment Analyst",
+    role: "investment_analyst",
     image: "https://randomuser.me/api/portraits/men/55.jpg",
     quote:
-      "I track five currencies and several accounts. Welth’s multi-currency dashboard works flawlessly. It’s become my daily go-to.",
+      "I track five accounts and love the SQL-style dashboard. The data clarity is unmatched — it's become my daily go-to.",
   },
 ];

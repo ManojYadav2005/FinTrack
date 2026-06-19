@@ -1,20 +1,20 @@
+import { Suspense } from "react";
 import DashboardPage from "./page";
 import { BarLoader } from "react-spinners";
-import { Suspense } from "react";
 
 export default function Layout() {
   return (
-    <div className="px-5">
-<div className="flex items-center justify-between mb-5">
-  <h1 className="text-6xl font-bold tracking-tight bg-gradient-to-r from-orange-500 via-pink-500 to-fuchsia-600 bg-clip-text text-transparent drop-shadow-md">
-    Dashboard
-  </h1>
-</div>
-      <Suspense
-        fallback={<BarLoader className="mt-4" width={"100%"} color="#9333ea" />}
-      >
-        <DashboardPage />
-      </Suspense>
-    </div>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex flex-col items-center justify-center gap-4" style={{ background: "var(--bg-root)" }}>
+          <BarLoader width={280} color="#3b82f6" />
+          <p className="text-xs font-mono text-slate-500 animate-pulse">
+            QUERYING fintrack.transactions...
+          </p>
+        </div>
+      }
+    >
+      <DashboardPage />
+    </Suspense>
   );
 }
