@@ -42,43 +42,12 @@ Make sure you have Node.js and npm installed on your machine.
    npm install
    ```
 
-3. Configure your environment variables. Create a `.env` file in the root directory and add the following keys:
-   ```env
-   # Clerk Authentication
-   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_publishable_key
-   CLERK_SECRET_KEY=your_secret_key
-   NEXT_PUBLIC_CLERK_SIGN_IN_URL=sign-in
-   NEXT_PUBLIC_CLERK_SIGN_UP_URL=sign-up
-
-   # Supabase & Prisma
-   DATABASE_URL="postgresql://postgres.[project-ref]:[password]@aws-0-REGION.pooler.supabase.com:6543/postgres?pgbouncer=true"
-   DIRECT_URL="postgresql://postgres.[project-ref]:[password]@aws-0-REGION.pooler.supabase.com:5432/postgres"
-
-   # Google Gemini AI
-   GEMINI_API_KEY=your_gemini_api_key
-   ENABLE_AI_RECEIPT_SCANNER=true
-   NEXT_PUBLIC_ENABLE_AI_RECEIPT_SCANNER=true
-
-   # Resend Email API
-   RESEND_API_KEY=your_resend_api_key
-   ```
-
-4. Generate the Prisma Client:
-   ```bash
-   npx prisma generate
-   ```
-
-5. Push the database schema:
-   ```bash
-   npx prisma db push
-   ```
-
-6. Run the development server:
+3. Run the development server:
    ```bash
    npm run dev
    ```
 
-7. Open [http://localhost:3000](http://localhost:3000) in your browser.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## 🎨 Design Philosophy
 FinTrack rejects the standard, overly-simplified white dashboards. We believe power users want their tools to feel powerful. The UI makes heavy use of:
