@@ -2,10 +2,10 @@
   <img src="public/logo1.png" alt="FinTrack Logo" width="80" />
 </p>
 
-<h1 align="center">FinTrack — AI-Powered Personal Finance Platform</h1>
+<h1 align="center">FinTrack — Personal Finance Platform</h1>
 
 <p align="center">
-  A full-stack, production-grade personal finance dashboard built with <strong>Next.js 16</strong>, <strong>MongoDB</strong>, and <strong>Inngest</strong>. Track accounts, automate recurring transactions, get AI-generated spending insights, and receive real-time budget alerts — all from one dashboard.
+  A full-stack, production-grade personal finance dashboard built with <strong>Next.js 16</strong>, <strong>MongoDB</strong>, and <strong>Inngest</strong>. Track accounts, automate recurring transactions, set monthly budgets, and receive real-time budget alerts — all from one dashboard.
 </p>
 
 <p align="center">
@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb&logoColor=white" alt="MongoDB" />
   <img src="https://img.shields.io/badge/Clerk-Auth-6C47FF?logo=clerk&logoColor=white" alt="Clerk" />
   <img src="https://img.shields.io/badge/Inngest-Background%20Jobs-5865F2?logo=data:image/svg+xml;base64,&logoColor=white" alt="Inngest" />
-  <img src="https://img.shields.io/badge/Gemini-AI-4285F4?logo=google&logoColor=white" alt="Gemini AI" />
+
   <img src="https://img.shields.io/badge/Resend-Email-000000?logo=resend&logoColor=white" alt="Resend" />
 </p>
 
@@ -62,10 +62,9 @@
 - Budget alerts are fired **synchronously** on transaction creation for immediate feedback
 - Inngest also runs a **background check every 6 hours** as a safety net
 
-### 📧 AI-Powered Monthly Financial Reports
+### 📧 Automated Monthly Financial Reports
 - On the **1st of every month**, Inngest triggers automated report generation
-- Each user receives an email with: **income summary**, **expense breakdown by category**, and **3 AI-generated spending insights**
-- Insights are generated using **Google Gemini AI** — personalized, actionable advice based on actual spending data
+- Each user receives an email with: **income summary**, **expense breakdown by category**, and **spending insights**
 - Emails are beautifully rendered using **React Email** (`@react-email/components`)
 
 ### 📈 Interactive Charts
@@ -110,7 +109,7 @@
   │         INNGEST (Background Jobs)        │
   │                                          │
   │  ⏰ Daily     → Process recurring txns   │
-  │  ⏰ Monthly   → Generate AI reports      │
+  │  ⏰ Monthly   → Generate monthly reports   │
   │  ⏰ Every 6h  → Check budget alerts      │
   │                                          │
   │  Features: Retry, Throttling, Batching   │
@@ -129,7 +128,7 @@
 | **Database** | [MongoDB Atlas](https://www.mongodb.com/atlas) + [Mongoose](https://mongoosejs.com/) | Flexible schemas, Atlas for managed hosting |
 | **Auth** | [Clerk](https://clerk.com/) | Drop-in auth with OAuth, webhooks, and user management |
 | **Background Jobs** | [Inngest](https://www.inngest.com/) | Serverless-friendly cron + event queue with built-in retry/throttling |
-| **AI** | [Google Gemini](https://ai.google.dev/) | Generates personalized financial insights for monthly reports |
+
 | **Email** | [Resend](https://resend.com/) + [React Email](https://react.email/) | Transactional emails with beautiful React-rendered templates |
 | **Charts** | [Recharts](https://recharts.org/) | Composable, responsive SVG charts for React |
 | **UI Components** | [Radix UI](https://www.radix-ui.com/) + [shadcn/ui](https://ui.shadcn.com/) | Accessible, unstyled primitives with custom theming |
@@ -148,7 +147,7 @@ fintrack/
 │   │   └── transaction/         # Add / Edit transaction form
 │   ├── api/
 │   │   ├── inngest/             # Inngest webhook handler (serves background functions)
-│   │   ├── scan-receipt/        # (Preserved) Gemini receipt scan endpoint
+│   │   ├── scan-receipt/        # Receipt scan endpoint
 │   │   └── seed/                # DB seed route for development
 │   ├── layout.js                # Root layout with Clerk provider & theme
 │   └── page.js                  # Landing / Hero page
@@ -198,7 +197,7 @@ Inngest acts as the **background job orchestrator** — handling scheduled tasks
 |----------|---------|-------------|
 | `triggerRecurringTransactions` | `cron: 0 0 * * *` (Daily midnight) | Finds all due recurring transactions and dispatches processing events |
 | `processRecurringTransaction` | Event: `transaction.recurring.process` | Creates the new transaction, updates account balance, calculates next due date |
-| `generateMonthlyReports` | `cron: 0 0 1 * *` (1st of month) | Generates per-user financial reports with Gemini AI insights, sends via email |
+| `generateMonthlyReports` | `cron: 0 0 1 * *` (1st of month) | Generates per-user financial reports with spending insights, sends via email |
 | `checkBudgetAlerts` | `cron: 0 */6 * * *` (Every 6 hours) | Checks spending vs budget, sends alert email if ≥ 80% used |
 
 **Why Inngest over alternatives?**
@@ -219,7 +218,7 @@ Inngest acts as the **background job orchestrator** — handling scheduled tasks
 - **Clerk** application ([Sign up](https://clerk.com/))
 - **Resend** account ([Sign up](https://resend.com/))
 - **Inngest** account ([Sign up](https://www.inngest.com/)) — for background jobs
-- **Gemini API Key** ([Get key](https://ai.google.dev/)) — for AI-powered insights
+
 
 ### Installation
 
@@ -254,8 +253,7 @@ INNGEST_SIGNING_KEY=...
 # Resend (Email)
 RESEND_API_KEY=re_...
 
-# Google Gemini AI (Financial Insights)
-GEMINI_API_KEY=...
+
 ```
 
 ### Run Development Server
@@ -292,7 +290,7 @@ npm run email
 | Method | Route | Purpose |
 |--------|-------|---------|
 | `GET/POST/PUT` | `/api/inngest` | Inngest webhook handler — serves all background functions |
-| `POST` | `/api/scan-receipt` | *(Preserved, UI hidden)* — Gemini-powered receipt scanner |
+| `POST` | `/api/scan-receipt` | Receipt scanner endpoint |
 | `GET` | `/api/seed` | Development-only database seeder |
 
 > 💡 Most data mutations happen through **Server Actions** (`/actions/*`), not API routes — following Next.js 16 best practices.
