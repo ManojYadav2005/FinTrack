@@ -4,7 +4,8 @@ import { BarLoader } from "react-spinners";
 import { TransactionTable } from "../_components/transaction-table";
 import { notFound } from "next/navigation";
 import { AccountChart } from "../_components/account-chart";
-import { Database, CreditCard } from "lucide-react";
+import { CreditCard } from "lucide-react";
+import { formatCurrency } from "@/lib/formatCurrency";
 
 export default async function AccountPage({ params }) {
   const { id } = await params;
@@ -17,37 +18,35 @@ export default async function AccountPage({ params }) {
   const { transactions, ...account } = accountData;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 container mx-auto px-4 py-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end justify-between pb-4 border-b border-slate-800">
+      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end justify-between pb-4 border-b border-slate-200">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
-            <Database className="w-6 h-6 text-blue-400" />
+          <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
+            <CreditCard className="w-6 h-6 text-blue-600" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold font-mono tracking-tight text-slate-100 capitalize">
+            <h1 className="text-2xl font-bold text-slate-800 capitalize">
               {account.name}
             </h1>
-            <p className="text-sm font-mono text-slate-500">
-              SCHEMA: {account.type.toLowerCase()}_account
+            <p className="text-sm text-slate-500 capitalize">
+              {account.type.toLowerCase()} account · {account._count.transactions} transactions
             </p>
           </div>
         </div>
 
         <div className="text-left sm:text-right">
-          <div className="text-3xl font-bold font-mono text-slate-100">
-            ${parseFloat(account.balance).toFixed(2)}
+          <div className="text-3xl font-bold text-slate-800">
+            {formatCurrency(parseFloat(account.balance))}
           </div>
-          <p className="text-sm font-mono text-slate-500">
-            {account._count.transactions} rows returned
-          </p>
+          <p className="text-sm text-slate-400 mt-0.5">Current Balance</p>
         </div>
       </div>
 
       {/* Analytics Chart */}
       <Suspense
         fallback={
-          <div className="flex items-center justify-center h-[400px] border border-slate-800 rounded-xl bg-slate-900/40">
+          <div className="flex items-center justify-center h-[400px] border border-slate-200 rounded-xl bg-white">
             <BarLoader width={200} color="#3b82f6" />
           </div>
         }
@@ -58,7 +57,7 @@ export default async function AccountPage({ params }) {
       {/* Transaction Table */}
       <Suspense
         fallback={
-          <div className="flex items-center justify-center h-[400px] border border-slate-800 rounded-xl bg-slate-900/40">
+          <div className="flex items-center justify-center h-[400px] border border-slate-200 rounded-xl bg-white">
             <BarLoader width={200} color="#3b82f6" />
           </div>
         }

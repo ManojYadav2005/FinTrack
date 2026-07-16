@@ -1,109 +1,117 @@
 "use server";
 
-import { db } from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
+import { connectToDatabase } from "@/lib/mongoose"; //  database (MongoDB) se connection banata hai.
+import { User } from "@/models/User";
+import { Account } from "@/models/Account";
+import { Transaction } from "@/models/Transaction";
+import { auth } from "@clerk/nextjs/server";   // yeh clerk se aata hai 
 import { revalidatePath } from "next/cache";
+//  User, Account, Transaction: Yeh hamare database ke "models" hain. Inke zariye hum database se data read, write ya delete karte hain.
+// Mongoose already stores as Number if we defined it that way,
+// but we map _id to id and handle Dates if necessary.
 
-const serializeDecimal = (obj) => {
-  const serialized = { ...obj };
-  if (obj.balance) {
-    serialized.balance = obj.balance.toNumber();
-  }
-  if (obj.amount) {
-    serialized.amount = obj.amount.toNumber();
-  }
-  return serialized;
+const serializeDoc = (doc) => {  // MongoDB document ko normal JavaScript object mein convert karta hai.
+  if (!doc) return doc;
+  const plainDoc = typeof doc.toObject === "function" ? doc.toObject() : doc;
+  const serialized = { ...plainDoc, id: plainDoc._id?.toString() || plainDoc.id };
+  return JSON.parse(JSON.stringify(serialized));
 };
 
-export async function getAccountWithTransactions(accountId) {
-  const { userId } = await auth();
+
+export async function getAccountWithTransactions(accountId) { // Yeh function kisi specific account ki details aur uske saare transactions nikal kar lata hai
+ 
+  const { userId } = await auth(); // check karega clerk se login hai ya nhi if nahi then unauthirxed error
+   // Step A: Check karna ki user logged in hai ya nahi
   if (!userId) throw new Error("Unauthorized");
 
-  const user = await db.user.findUnique({
-    where: { clerkUserId: userId },
-  });
+  await connectToDatabase();  // Step B: Database se connect karna
 
+  const user = await User.findOne({ clerkUserId: userId }).lean(); // Mongoose normally ek special document object return karta hai. //lean() lagane se simple JavaScript object milta hai.
   if (!user) throw new Error("User not found");
 
-  const account = await db.account.findUnique({
-    where: {
-      id: accountId,
-      userId: user.id,
-    },
-    include: {
-      transactions: {
-        orderBy: { date: "desc" },
-      },
-      _count: {
-        select: { transactions: true },
-      },
-    },
-  });
+  const account = await Account.findOne({ // Account bhi match hona chahiye aur us account ka owner bhi current user hi hona chahiye.
+    _id: accountId,
+    userId: user._id,
+  }).lean();
 
   if (!account) return null;
+  // Step D: Us account se related saare transactions fetch karna
+
+// Mujhe is account ki saari transactions laakar do.
+  const transactions = await Transaction.find({ accountId })
+    .sort({ date: -1 }) // Date ke hisaab se descending order mein arrange karo.
+    .lean(); // Sirf plain JavaScript objects do
 
   return {
-    ...serializeDecimal(account),
-    transactions: account.transactions.map(serializeDecimal),
+    ...serializeDoc(account), // ... Is object ke saare fields yahan copy kar do.
+    transactions: transactions.map(serializeDoc), // serializeDoc(account)Account ko normal object mein convert karta hai.
+    _count: {
+      transactions: transactions.length,
+    },
   };
 }
 
-export async function bulkDeleteTransactions(transactionIds) {
+
+
+
+
+export async function bulkDeleteTransactions(transactionIds) { // Yeh function ek saath bahut saari transactions ko delete karne ke kaam aata hai. Yeh thoda complex hai kyunki jab hum koi transaction delete karte hain, toh humein Account ka balance bhi wapas theek karna hota hai.
   try {
     const { userId } = await auth();
     if (!userId) throw new Error("Unauthorized");
 
-    const user = await db.user.findUnique({
-      where: { clerkUserId: userId },
-    });
+    await connectToDatabase();
 
+    const user = await User.findOne({ clerkUserId: userId });
     if (!user) throw new Error("User not found");
 
-    // Get transactions to calculate balance changes
-    const transactions = await db.transaction.findMany({
-      where: {
-        id: { in: transactionIds },
-        userId: user.id,
-      },
+    // Get transactions to calculate balance changes. 
+    // Step A: Jo transactions delete karni hain, pehle unhe database se nikal lo
+    const transactions = await Transaction.find({
+      _id: { $in: transactionIds },
+      userId: user._id,
     });
 
-    // Group transactions by account to update balances
+    // Step B: Calculate karna ki balance mein kitna farq (change) aayega
+    // Agar humne 500 ka "EXPENSE" delete kiya, toh balance +500 hona chahiye.
+    // Agar "INCOME" delete kiya, toh balance -500 hona chahiye.
     const accountBalanceChanges = transactions.reduce((acc, transaction) => {
       const change =
-        transaction.type === "EXPENSE"
-          ? transaction.amount
-          : -transaction.amount; // income
+        transaction.type === "EXPENSE" ? transaction.amount : -transaction.amount; // income
       acc[transaction.accountId] = (acc[transaction.accountId] || 0) + change;
       return acc;
     }, {});
 
-    // Delete transactions and update account balances in a transaction
-    await db.$transaction(async (tx) => {  //db.$transaction()-> allows multiple database operations to happen as one atomic unit.-> “Atomic” means either everything inside succeeds, or everything is rolled back (undone) if something fails.
+
+    // Mongoose transactions need a session
+    //Ya to sab kuch hoga, ya kuch bhi nahi hoga.
+    const session = await Account.startSession();///👉 MongoDB transaction start karne ke liye session banata hai.
+
+    await session.withTransaction(async () => {
       // Delete transactions
-      await tx.transaction.deleteMany({
-        where: {
-          id: { in: transactionIds },
-          userId: user.id,
+      await Transaction.deleteMany(
+        {
+          _id: { $in: transactionIds },
+          userId: user._id,
         },
-      });
+        { session }
+      );
 
       // Update account balances
-      for (const [accountId, balanceChange] of Object.entries( // Object.entries(obj) takes an object and returns an array of [key, value] pairs.
-        accountBalanceChanges
-      )) {
-        await tx.account.update({
-          where: { id: accountId },
-          data: {
-            balance: {
-              increment: balanceChange,
-            },
-          },
-        });
+      for (const [accId, balanceChange] of Object.entries(accountBalanceChanges)) {
+        await Account.updateOne(
+          { _id: accId },
+          { $inc: { balance: balanceChange } },///👉$inc (increment) operator ka istemaal karke balance ko badha ya ghata raha hai.
+          { session }
+        );              //$inc: Existing value mein add/subtract karo.
       }
     });
+    session.endSession();
 
+
+    // Step D: UI ko bolna ki data change ho gaya hai, page reload karo
     revalidatePath("/dashboard");
-    revalidatePath("/account/[id]");
+    revalidatePath("/account/[id]"); // Account details page bhi refresh karo.
 
     return { success: true };
   } catch (error) {
@@ -111,39 +119,56 @@ export async function bulkDeleteTransactions(transactionIds) {
   }
 }
 
+// Delete Transactions
+//         ↓
+// Update Balances
+//         ↓
+// Commit Transaction
+//         ↓
+// Refresh Dashboard Cache
+//         ↓
+// Refresh Account Cache
+//         ↓
+// Return success:true
+
+
+
+////Jab user multiple accounts banata hai, toh wo kisi ek ko "Default" set kar sakta hai. Yeh function wahi kaam karta hai.
 export async function updateDefaultAccount(accountId) {
   try {
     const { userId } = await auth();
     if (!userId) throw new Error("Unauthorized");
 
-    const user = await db.user.findUnique({
-      where: { clerkUserId: userId },
-    });
+    await connectToDatabase();
 
+    const user = await User.findOne({ clerkUserId: userId });
     if (!user) {
       throw new Error("User not found");
     }
 
-    // First, unset any existing default account
-    await db.account.updateMany({
-      where: {
-        userId: user.id,
+    // Step A: Purane kisi bhi account se "isDefault: true" hata do (usko false kardo)
+    // Kyunki ek time par ek hi account default ho sakta hai
+    await Account.updateMany(
+      {
+        userId: user._id,
         isDefault: true,
       },
-      data: { isDefault: false },
-    });
+      { isDefault: false }
+    );
 
-    // Then set the new default account
-    const account = await db.account.update({
-      where: {
-        id: accountId,
-        userId: user.id,
+   
+    // Step B: Jo naya accountId aaya hai, usko "isDefault: true" set kardo
+    const account = await Account.findOneAndUpdate(
+      {
+        _id: accountId,
+        userId: user._id,
       },
-      data: { isDefault: true },
-    });
+      { isDefault: true },
+      { new: true }  //   // 'new: true' ka matlab hai update hone ke baad naya wala data return karo
+    ).lean();
 
     revalidatePath("/dashboard");
-    return { success: true, data: serializeTransaction(account) };
+    return { success: true, data: serializeDoc(account) };
   } catch (error) {
     return { success: false, error: error.message };
   }

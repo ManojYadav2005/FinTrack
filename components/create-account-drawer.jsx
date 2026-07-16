@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import useFetch from "@/hooks/use-fetch";
 import { toast } from "sonner";
@@ -26,26 +24,18 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { createAccount } from "@/actions/dashboard";
-import { accountSchema } from "@/app/lib/schema";
 
 export function CreateAccountDrawer({ children }) {
   const [open, setOpen] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    setValue,
-    watch,
-    reset,
-  } = useForm({
-    resolver: zodResolver(accountSchema),
-    defaultValues: {
-      name: "",
-      type: "CURRENT",
-      balance: "",
-      isDefault: false,
-    },
-  });
+  
+  // State for form fields
+  const [name, setName] = useState("");
+  const [type, setType] = useState("CURRENT");
+  const [balance, setBalance] = useState("");
+  const [isDefault, setIsDefault] = useState(false);
+  
+  // State for errors
+  const [errors, setErrors] = useState({});
 
   const {
     loading: createAccountLoading,
@@ -54,17 +44,43 @@ export function CreateAccountDrawer({ children }) {
     data: newAccount,
   } = useFetch(createAccount);
 
-  const onSubmit = async (data) => {
-    await createAccountFn(data);
+  const resetForm = () => {
+    setName("");
+    setType("CURRENT");
+    setBalance("");
+    setIsDefault(false);
+    setErrors({});
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!name.trim()) newErrors.name = "Account name is required";
+    if (!type) newErrors.type = "Account type is required";
+    if (!balance || isNaN(parseFloat(balance))) newErrors.balance = "Valid balance is required";
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    await createAccountFn({
+      name,
+      type,
+      balance,
+      isDefault
+    });
   };
 
   useEffect(() => {
     if (newAccount) {
       toast.success("Account created successfully");
-      reset();
+      resetForm();
       setOpen(false);
     }
-  }, [newAccount, reset]);
+  }, [newAccount]);
 
   useEffect(() => {
     if (error) {
@@ -80,7 +96,7 @@ export function CreateAccountDrawer({ children }) {
           <DrawerTitle>Create New Account</DrawerTitle>
         </DrawerHeader>
         <div className="px-4 pb-4">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={onSubmit} className="space-y-4">
             <div className="space-y-2">
               <label
                 htmlFor="name"
@@ -91,10 +107,11 @@ export function CreateAccountDrawer({ children }) {
               <Input
                 id="name"
                 placeholder="e.g., Main Checking"
-                {...register("name")}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
               {errors.name && (
-                <p className="text-sm text-red-500">{errors.name.message}</p>
+                <p className="text-sm text-red-500">{errors.name}</p>
               )}
             </div>
 
@@ -106,8 +123,8 @@ export function CreateAccountDrawer({ children }) {
                 Account Type
               </label>
               <Select
-                onValueChange={(value) => setValue("type", value)}
-                defaultValue={watch("type")}
+                value={type}
+                onValueChange={setType}
               >
                 <SelectTrigger id="type">
                   <SelectValue placeholder="Select type" />
@@ -118,7 +135,7 @@ export function CreateAccountDrawer({ children }) {
                 </SelectContent>
               </Select>
               {errors.type && (
-                <p className="text-sm text-red-500">{errors.type.message}</p>
+                <p className="text-sm text-red-500">{errors.type}</p>
               )}
             </div>
 
@@ -134,10 +151,11 @@ export function CreateAccountDrawer({ children }) {
                 type="number"
                 step="0.01"
                 placeholder="0.00"
-                {...register("balance")}
+                value={balance}
+                onChange={(e) => setBalance(e.target.value)}
               />
               {errors.balance && (
-                <p className="text-sm text-red-500">{errors.balance.message}</p>
+                <p className="text-sm text-red-500">{errors.balance}</p>
               )}
             </div>
 
@@ -155,8 +173,8 @@ export function CreateAccountDrawer({ children }) {
               </div>
               <Switch
                 id="isDefault"
-                checked={watch("isDefault")}
-                onCheckedChange={(checked) => setValue("isDefault", checked)}
+                checked={isDefault}
+                onCheckedChange={setIsDefault}
               />
             </div>
 

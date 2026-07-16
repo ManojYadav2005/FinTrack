@@ -13,7 +13,6 @@ export function ReceiptScanner({ onScanComplete }) {
   const handleFile = async (file) => {
     if (!file) return;
 
-    // Validate
     if (!file.type.startsWith("image/")) {
       toast.error("Please upload an image file (JPG, PNG, WEBP)");
       return;
@@ -23,7 +22,6 @@ export function ReceiptScanner({ onScanComplete }) {
       return;
     }
 
-    // Show preview
     const reader = new FileReader();
     reader.onload = (e) => setPreview(e.target.result);
     reader.readAsDataURL(file);
@@ -49,7 +47,7 @@ export function ReceiptScanner({ onScanComplete }) {
       setScannedData(json.data);
       onScanComplete(json.data);
       toast.success("Receipt scanned! Fields auto-filled ✓", {
-        description: `${json.data.description} · $${json.data.amount}`,
+        description: `${json.data.description} · ₹${json.data.amount}`,
       });
     } catch (err) {
       console.error(err);
@@ -77,20 +75,20 @@ export function ReceiptScanner({ onScanComplete }) {
   };
 
   return (
-    <div className="rounded-xl border border-slate-700 bg-slate-900/60 overflow-hidden">
+    <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
       {/* Header */}
-      <div className="px-4 py-3 border-b border-slate-800 bg-slate-900/80 flex items-center justify-between">
+      <div className="px-4 py-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-blue-400" />
-          <span className="text-sm font-mono font-semibold text-slate-200">AI Receipt Scanner</span>
-          <span className="sql-badge sql-badge-blue text-[10px]">Gemini Vision</span>
+          <Sparkles className="w-4 h-4 text-blue-500" />
+          <span className="text-sm font-semibold text-slate-700">AI Receipt Scanner</span>
+          <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-600 text-[11px] font-medium">Gemini</span>
         </div>
         {preview && (
           <button
             onClick={handleClear}
-            className="p-1 rounded hover:bg-slate-700 transition-colors"
+            className="p-1 rounded hover:bg-slate-200 transition-colors"
           >
-            <X className="w-4 h-4 text-slate-400 hover:text-red-400 transition-colors" />
+            <X className="w-4 h-4 text-slate-400 hover:text-red-500 transition-colors" />
           </button>
         )}
       </div>
@@ -103,35 +101,33 @@ export function ReceiptScanner({ onScanComplete }) {
             onDrop={handleDrop}
             onDragOver={(e) => e.preventDefault()}
             onClick={() => fileInputRef.current?.click()}
-            className="relative flex flex-col items-center justify-center gap-3 py-8 rounded-xl border-2 border-dashed border-slate-700 hover:border-blue-500/60 hover:bg-blue-500/5 cursor-pointer transition-all duration-200 group"
+            className="flex flex-col items-center justify-center gap-3 py-8 rounded-xl border-2 border-dashed border-slate-200 hover:border-blue-400 hover:bg-blue-50 cursor-pointer transition-all duration-200 group"
           >
-            <div className="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center group-hover:bg-blue-500/20 group-hover:scale-105 transition-all duration-200">
-              <Camera className="w-6 h-6 text-blue-400" />
+            <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center group-hover:bg-blue-100 transition-all">
+              <Camera className="w-6 h-6 text-blue-500" />
             </div>
             <div className="text-center">
-              <p className="text-sm font-semibold text-slate-300 group-hover:text-slate-100 transition-colors">
+              <p className="text-sm font-semibold text-slate-600 group-hover:text-slate-800 transition-colors">
                 Click or drag a receipt photo
               </p>
-              <p className="text-xs text-slate-500 mt-1 font-mono">
+              <p className="text-xs text-slate-400 mt-1">
                 JPG · PNG · WEBP · up to 10 MB
               </p>
             </div>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold transition-colors"
-                onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
-              >
-                <Upload className="w-3.5 h-3.5" />
-                Upload Photo
-              </button>
-            </div>
+            <button
+              type="button"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors"
+              onClick={(e) => { e.stopPropagation(); fileInputRef.current?.click(); }}
+            >
+              <Upload className="w-3.5 h-3.5" />
+              Upload Photo
+            </button>
           </div>
         ) : (
           // Preview + scanning state
           <div className="flex flex-col sm:flex-row gap-4">
             {/* Image preview */}
-            <div className={`relative rounded-xl overflow-hidden border border-slate-700 flex-shrink-0 w-full sm:w-36 h-32 ${isScanning ? "scanner-overlay" : ""}`}>
+            <div className="relative rounded-xl overflow-hidden border border-slate-200 flex-shrink-0 w-full sm:w-36 h-32">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={preview}
@@ -139,8 +135,8 @@ export function ReceiptScanner({ onScanComplete }) {
                 className="w-full h-full object-cover"
               />
               {isScanning && (
-                <div className="absolute inset-0 bg-slate-950/60 flex items-center justify-center">
-                  <Loader2 className="w-6 h-6 text-blue-400 animate-spin" />
+                <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
+                  <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
                 </div>
               )}
             </div>
@@ -149,14 +145,14 @@ export function ReceiptScanner({ onScanComplete }) {
             <div className="flex-1 min-w-0">
               {isScanning ? (
                 <div className="flex flex-col gap-2 h-full justify-center">
-                  <div className="flex items-center gap-2 text-blue-400">
+                  <div className="flex items-center gap-2 text-blue-600">
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span className="text-sm font-mono">Analyzing receipt with Gemini AI...</span>
+                    <span className="text-sm font-medium">Analyzing receipt...</span>
                   </div>
                   <div className="space-y-1.5">
                     {["Extracting amount", "Reading date", "Identifying merchant", "Mapping category"].map((s, i) => (
-                      <div key={i} className="flex items-center gap-2 text-xs font-mono text-slate-500">
-                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500/50 animate-pulse" style={{ animationDelay: `${i * 0.2}s` }} />
+                      <div key={i} className="flex items-center gap-2 text-xs text-slate-400">
+                        <div className="w-1.5 h-1.5 rounded-full bg-blue-300 animate-pulse" style={{ animationDelay: `${i * 0.2}s` }} />
                         {s}...
                       </div>
                     ))}
@@ -164,27 +160,27 @@ export function ReceiptScanner({ onScanComplete }) {
                 </div>
               ) : scannedData ? (
                 <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-green-400 mb-3">
+                  <div className="flex items-center gap-2 text-green-600 mb-3">
                     <CheckCircle2 className="w-4 h-4" />
-                    <span className="text-sm font-mono font-semibold">Scan complete — form auto-filled!</span>
+                    <span className="text-sm font-semibold">Scan complete — form filled!</span>
                   </div>
                   <div className="grid grid-cols-2 gap-2">
                     {[
-                      { label: "amount", value: `$${scannedData.amount}` },
-                      { label: "date", value: scannedData.date },
-                      { label: "merchant", value: scannedData.description },
-                      { label: "category", value: scannedData.category },
+                      { label: "Amount", value: `₹${scannedData.amount}` },
+                      { label: "Date", value: scannedData.date },
+                      { label: "Merchant", value: scannedData.description },
+                      { label: "Category", value: scannedData.category },
                     ].map((item) => (
-                      <div key={item.label} className="bg-slate-800/60 rounded-lg px-3 py-2 border border-slate-700">
-                        <p className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">{item.label}</p>
-                        <p className="text-xs font-mono text-slate-200 truncate mt-0.5">{item.value}</p>
+                      <div key={item.label} className="bg-slate-50 rounded-lg px-3 py-2 border border-slate-100">
+                        <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wide">{item.label}</p>
+                        <p className="text-xs text-slate-700 truncate mt-0.5 font-medium">{item.value}</p>
                       </div>
                     ))}
                   </div>
                   <button
                     type="button"
                     onClick={handleClear}
-                    className="mt-1 text-xs font-mono text-slate-500 hover:text-blue-400 transition-colors"
+                    className="mt-1 text-xs text-slate-400 hover:text-blue-500 transition-colors"
                   >
                     Scan another receipt →
                   </button>

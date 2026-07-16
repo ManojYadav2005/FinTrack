@@ -1,7 +1,10 @@
 "use server";
 
-import { db } from "@/lib/prisma";
+import { connectToDatabase } from "@/lib/mongoose";
+import { Transaction } from "@/models/Transaction";
+import { Account } from "@/models/Account";
 import { subDays } from "date-fns";
+import mongoose from "mongoose";
 
 const ACCOUNT_ID = "account-id";
 const USER_ID = "user-id";
@@ -43,6 +46,8 @@ function getRandomCategory(type) {
 
 export async function seedTransactions() {
   try {
+    await connectToDatabase();
+
     // Generate 90 days of transactions
     const transactions = [];
     let totalBalance = 0;
@@ -59,7 +64,7 @@ export async function seedTransactions() {
         const { category, amount } = getRandomCategory(type);
 
         const transaction = {
-          id: crypto.randomUUID(),
+          _id: crypto.randomUUID(),
           type,
           amount,
           description: `${
@@ -80,23 +85,25 @@ export async function seedTransactions() {
     }
 
     // Insert transactions in batches and update account balance
-    await db.$transaction(async (tx) => {
+    const session = await mongoose.startSession();
+    await session.withTransaction(async () => {
       // Clear existing transactions
-      await tx.transaction.deleteMany({
-        where: { accountId: ACCOUNT_ID },
-      });
+      await Transaction.deleteMany(
+        { accountId: ACCOUNT_ID },
+        { session }
+      );
 
       // Insert new transactions
-      await tx.transaction.createMany({
-        data: transactions,
-      });
+      await Transaction.insertMany(transactions, { session });
 
       // Update account balance
-      await tx.account.update({
-        where: { id: ACCOUNT_ID },
-        data: { balance: totalBalance },
-      });
+      await Account.updateOne(
+        { _id: ACCOUNT_ID },
+        { balance: totalBalance },
+        { session }
+      );
     });
+    session.endSession();
 
     return {
       success: true,

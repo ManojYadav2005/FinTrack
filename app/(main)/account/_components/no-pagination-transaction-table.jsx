@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { formatCurrency } from "@/lib/formatCurrency";
 
 import {
   Table,
@@ -346,8 +347,7 @@ export function NoPaginationTransactionTable({ transactions }) {
                         : "text-green-500"
                     )}
                   >
-                    {transaction.type === "EXPENSE" ? "-" : "+"}$
-                    {transaction.amount.toFixed(2)}
+                    {transaction.type === "EXPENSE" ? "-" : "+"}{formatCurrency(transaction.amount)}
                   </TableCell>
                   <TableCell>
                     {transaction.isRecurring ? (

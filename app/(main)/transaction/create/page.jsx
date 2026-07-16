@@ -55,9 +55,12 @@ export default async function AddTransactionPage({ searchParams }) {
   return (
     <div className="max-w-3xl mx-auto px-5">
     <div className="flex justify-center md:justify-normal mb-8">
-      <h1 className="text-5xl font-extrabold bg-gradient-to-r from-rose-500 via-orange-500 to-amber-400 bg-clip-text text-transparent tracking-tight drop-shadow-xl">
-        Add Transaction
-      </h1>
+      <div>
+        <h1 className="text-3xl font-bold text-slate-800">
+          {editId ? "Edit Transaction" : "Add Transaction"}
+        </h1>
+        <p className="text-slate-500 text-sm mt-1">Fill in the details below to record your transaction</p>
+      </div>
     </div>
     <Suspense
       fallback={

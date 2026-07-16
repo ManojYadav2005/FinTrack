@@ -1,73 +1,62 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ============================================================
-   FINTRACK — SQL / DATA-GRID DARK THEME
+   FINTRACK — Clean, Simple Theme
    ============================================================ */
 
 :root {
   /* Core palette */
-  --bg-root:        #070b14;
-  --bg-surface:     #0d1323;
-  --bg-card:        #111827;
-  --bg-card-hover:  #161f35;
-  --bg-row:         #0f172a;
-  --bg-row-hover:   #1e293b;
+  --bg-root:        #f8fafc;
+  --bg-surface:     #ffffff;
+  --bg-card:        #ffffff;
+  --bg-card-hover:  #f1f5f9;
 
-  /* Accent spectrum */
-  --accent-blue:    #3b82f6;
-  --accent-cyan:    #06b6d4;
-  --accent-green:   #22c55e;
-  --accent-amber:   #f59e0b;
-  --accent-red:     #ef4444;
-  --accent-purple:  #8b5cf6;
+  /* Accent */
+  --accent-blue:    #2563eb;
+  --accent-blue-light: #3b82f6;
+  --accent-green:   #16a34a;
+  --accent-red:     #dc2626;
+  --accent-amber:   #d97706;
 
   /* Text */
-  --text-primary:   #e2e8f0;
-  --text-secondary: #94a3b8;
-  --text-muted:     #475569;
-  --text-accent:    #38bdf8;
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-muted:     #94a3b8;
 
   /* Borders */
-  --border-subtle:  #1e293b;
-  --border-default: #263045;
-  --border-accent:  rgba(59, 130, 246, 0.5);
+  --border-subtle:  #e2e8f0;
+  --border-default: #cbd5e1;
 
-  /* Glow effects */
-  --glow-blue:      0 0 20px rgba(59, 130, 246, 0.35);
-  --glow-cyan:      0 0 20px rgba(6, 182, 212, 0.35);
-  --glow-green:     0 0 20px rgba(34, 197, 94, 0.35);
-  --glow-amber:     0 0 20px rgba(245, 158, 11, 0.35);
-
-  /* Shadcn tokens (mapped to dark theme) */
-  --background:     7 11% 8%;
-  --foreground:     210 40% 88%;
-  --card:           213 32% 12%;
-  --card-foreground: 210 40% 88%;
-  --popover:        213 32% 10%;
-  --popover-foreground: 210 40% 88%;
-  --primary:        213 94% 60%;
+  /* Shadcn tokens */
+  --background:     0 0% 98%;
+  --foreground:     222 47% 7%;
+  --card:           0 0% 100%;
+  --card-foreground: 222 47% 7%;
+  --popover:        0 0% 100%;
+  --popover-foreground: 222 47% 7%;
+  --primary:        221 83% 53%;
   --primary-foreground: 0 0% 100%;
-  --secondary:      217 33% 17%;
-  --secondary-foreground: 210 40% 88%;
-  --muted:          217 33% 17%;
-  --muted-foreground: 215 20% 60%;
-  --accent:         213 94% 60%;
-  --accent-foreground: 0 0% 100%;
+  --secondary:      210 40% 96%;
+  --secondary-foreground: 222 47% 11%;
+  --muted:          210 40% 96%;
+  --muted-foreground: 215 16% 47%;
+  --accent:         210 40% 96%;
+  --accent-foreground: 222 47% 11%;
   --destructive:    0 84% 60%;
   --destructive-foreground: 0 0% 100%;
-  --border:         217 33% 22%;
-  --input:          217 33% 17%;
-  --ring:           213 94% 60%;
-  --chart-1:        213 94% 60%;
-  --chart-2:        173 58% 45%;
+  --border:         214 32% 91%;
+  --input:          214 32% 91%;
+  --ring:           221 83% 53%;
+  --chart-1:        221 83% 53%;
+  --chart-2:        173 58% 39%;
   --chart-3:        30 80% 55%;
   --chart-4:        280 65% 60%;
   --chart-5:        340 75% 55%;
-  --radius:         0.6rem;
+  --radius:         0.5rem;
 }
 
 /* ============================================================
@@ -92,12 +81,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-code,
-pre,
-.mono {
-  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
-}
-
 @layer base {
   * {
     @apply border-border;
@@ -116,27 +99,22 @@ pre,
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-root);
+  background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--border-default);
+  background: #cbd5e1;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-blue);
+  background: #94a3b8;
 }
 
 /* ============================================================
    KEYFRAME ANIMATIONS
    ============================================================ */
 
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 8px rgba(59, 130, 246, 0.2); }
-  50%       { box-shadow: 0 0 24px rgba(59, 130, 246, 0.6); }
-}
-
 @keyframes slide-up {
-  from { opacity: 0; transform: translateY(24px); }
+  from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -145,181 +123,39 @@ pre,
   to   { opacity: 1; }
 }
 
-@keyframes typewriter {
-  from { width: 0; }
-  to   { width: 100%; }
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
-}
-
-@keyframes row-flash {
-  0%   { background-color: rgba(59, 130, 246, 0.18); }
-  100% { background-color: transparent; }
-}
-
-@keyframes gradientMove {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-10px); }
-}
-
-@keyframes shimmer {
-  0%   { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-@keyframes scan-line {
-  0%   { top: -4px; }
-  100% { top: 100%; }
-}
-
 /* ============================================================
    UTILITY CLASSES
    ============================================================ */
 
 @layer utilities {
 
-  /* Typography */
-  .font-mono {
-    font-family: 'JetBrains Mono', monospace;
-  }
-
   .gradient-title {
-    @apply font-extrabold tracking-tight;
-    background: linear-gradient(135deg, #38bdf8 0%, #818cf8 50%, #34d399 100%);
+    @apply font-bold;
+    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
 
-  .glow-text-blue {
-    color: var(--accent-blue);
-    text-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
-  }
-
-  .glow-text-cyan {
-    color: var(--accent-cyan);
-    text-shadow: 0 0 20px rgba(6, 182, 212, 0.6);
-  }
-
-  /* SQL keyword highlight */
-  .sql-keyword {
-    color: #c792ea;
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 600;
-  }
-
-  .sql-string  { color: #c3e88d; font-family: 'JetBrains Mono', monospace; }
-  .sql-number  { color: #f78c6c; font-family: 'JetBrains Mono', monospace; }
-  .sql-comment { color: #546e7a; font-family: 'JetBrains Mono', monospace; font-style: italic; }
-
-  /* Cards */
-  .terminal-card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-default);
+  /* Simple card */
+  .simple-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
     border-radius: 12px;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: box-shadow 0.2s, border-color 0.2s;
   }
-  .terminal-card:hover {
-    border-color: var(--accent-blue);
-    box-shadow: var(--glow-blue);
+  .simple-card:hover {
+    border-color: #bfdbfe;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
   }
-
-  .glass-card {
-    background: rgba(13, 19, 35, 0.8);
-    border: 1px solid var(--border-default);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-radius: 12px;
-  }
-
-  /* SQL Table */
-  .sql-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.875rem;
-  }
-
-  .sql-table th {
-    background: var(--bg-row);
-    color: var(--accent-cyan);
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    padding: 10px 16px;
-    border-bottom: 1px solid var(--border-default);
-    text-align: left;
-  }
-
-  .sql-table td {
-    padding: 10px 16px;
-    border-bottom: 1px solid var(--border-subtle);
-    color: var(--text-primary);
-    transition: background 0.15s;
-  }
-
-  .sql-table tr:hover td {
-    background: var(--bg-row-hover);
-  }
-
-  /* Badges */
-  .sql-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-  }
-
-  .sql-badge-green  { background: rgba(34, 197, 94, 0.15);  color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
-  .sql-badge-red    { background: rgba(239, 68, 68, 0.15);  color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
-  .sql-badge-blue   { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
-  .sql-badge-amber  { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
 
   /* Animations */
-  .animate-slide-up   { animation: slide-up 0.5s ease-out both; }
-  .animate-fade-in    { animation: fade-in 0.4s ease-out both; }
-  .animate-float      { animation: float 4s ease-in-out infinite; }
-  .animate-pulse-glow { animation: pulse-glow 2.5s ease-in-out infinite; }
-  .animate-gradient   {
-    background-size: 200% 200%;
-    animation: gradientMove 4s ease infinite;
-  }
-  .animate-shimmer {
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.06) 50%, transparent 100%);
-    background-size: 200% 100%;
-    animation: shimmer 2s infinite;
-  }
-
-  /* Grid backgrounds */
-  .grid-bg {
-    background-image:
-      linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
-    background-size: 40px 40px;
-  }
-
-  .dot-bg {
-    background-image: radial-gradient(rgba(59, 130, 246, 0.15) 1px, transparent 1px);
-    background-size: 24px 24px;
-  }
+  .animate-slide-up { animation: slide-up 0.4s ease-out both; }
+  .animate-fade-in  { animation: fade-in 0.3s ease-out both; }
 }
 
 /* ============================================================
-   HERO IMAGE (preserved from original)
+   HERO IMAGE
    ============================================================ */
 
 .hero-image-wrapper {
@@ -327,33 +163,13 @@ pre,
 }
 
 .hero-image {
-  transform: rotateX(12deg) scale(1);
+  transform: rotateX(8deg) scale(1);
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
 }
 
 .hero-image.scrolled {
-  transform: rotateX(0deg) scale(1) translateY(30px);
-}
-
-/* ============================================================
-   RECEIPT SCANNER OVERLAY
-   ============================================================ */
-
-.scanner-overlay {
-  position: relative;
-  overflow: hidden;
-}
-
-.scanner-overlay::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, var(--accent-cyan), transparent);
-  animation: scan-line 2s linear infinite;
-  opacity: 0.8;
+  transform: rotateX(0deg) scale(1) translateY(20px);
 }
 
 /* ============================================================

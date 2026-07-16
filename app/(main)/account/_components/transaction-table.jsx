@@ -17,6 +17,7 @@ import {
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { formatCurrency } from "@/lib/formatCurrency";
 
 import {
   Table,
@@ -307,7 +308,7 @@ export function TransactionTable({ transactions }) {
                     "py-2.5 text-right font-mono text-sm",
                     t.type === "EXPENSE" ? "text-red-400" : "text-green-400"
                   )}>
-                    {t.type === "EXPENSE" ? "-" : "+"}${t.amount.toFixed(2)}
+                    {t.type === "EXPENSE" ? "-" : "+"}{formatCurrency(t.amount)}
                   </TableCell>
                   <TableCell className="py-2.5">
                     {t.isRecurring ? (

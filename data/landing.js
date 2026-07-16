@@ -32,11 +32,18 @@ export const statsData = [
 
 // Features — SQL table rows
 export const featuresData = [
+  // NOTE: AI Receipt Scanner feature hidden — uncomment to restore:
+  // {
+  //   icon: <ScanLine className="h-5 w-5 text-blue-400" />,
+  //   title: "AI Receipt Scanner",
+  //   description:
+  //     "Snap or upload a receipt — Gemini Vision auto-extracts amount, date, merchant and category. Zero manual typing.",
+  // },
   {
-    icon: <ScanLine className="h-5 w-5 text-blue-400" />,
-    title: "AI Receipt Scanner",
+    icon: <Receipt className="h-5 w-5 text-blue-400" />,
+    title: "Quick Transaction Logging",
     description:
-      "Snap or upload a receipt — Gemini Vision auto-extracts amount, date, merchant and category. Zero manual typing.",
+      "Log income and expenses in seconds with smart category tagging, recurring schedules, and instant balance updates.",
   },
   {
     icon: <PieChart className="h-5 w-5 text-yellow-400" />,
@@ -83,8 +90,8 @@ export const howItWorksData = [
     step: "STEP_02",
     title: "Add Transactions",
     description:
-      "Log manually or scan receipts with AI. Gemini Vision reads the slip and fills all fields automatically.",
-    icon: <ScanLine className="h-6 w-6 text-blue-400" />,
+      "Log your income and expenses with smart categories, dates, and recurring schedules — all in a few clicks.",
+    icon: <Receipt className="h-6 w-6 text-blue-400" />,
   },
   {
     step: "STEP_03",
@@ -102,7 +109,7 @@ export const testimonialsData = [
     role: "tech_entrepreneur",
     image: "https://randomuser.me/api/portraits/men/43.jpg",
     quote:
-      "FinTrack helped me consolidate my personal and startup finances seamlessly. The AI scanner saves me 30 minutes a day.",
+      "FinTrack helped me consolidate my personal and startup finances seamlessly. The recurring transaction feature saves me 30 minutes a day.",
   },
   {
     name: "Lisa Fernandez",
