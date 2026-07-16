@@ -17,6 +17,12 @@
   <img src="https://img.shields.io/badge/Resend-Email-000000?logo=resend&logoColor=white" alt="Resend" />
 </p>
 
+<p align="center">
+  <a href="https://fin-track-bzpr.vercel.app" target="_blank"><img src="https://img.shields.io/badge/🚀_Live_Demo-Visit_App-blue?style=for-the-badge" alt="Live Demo" /></a>
+  &nbsp;
+  <a href="https://github.com/ManojYadav2005/FinTrack" target="_blank"><img src="https://img.shields.io/badge/📂_Source_Code-GitHub-181717?style=for-the-badge&logo=github" alt="GitHub" /></a>
+</p>
+
 ---
 
 ## 📸 Preview
