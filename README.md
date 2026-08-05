@@ -5,16 +5,15 @@
 <h1 align="center">FinTrack — Personal Finance Platform</h1>
 
 <p align="center">
-  A full-stack, production-grade personal finance dashboard built with <strong>Next.js 16</strong>, <strong>MongoDB</strong>, and <strong>Inngest</strong>. Track accounts, automate recurring transactions, set monthly budgets, and receive real-time budget alerts — all from one dashboard.
+  A full-stack personal finance dashboard built with <strong>Next.js 16</strong>, <strong>MongoDB</strong>, and <strong>Clerk</strong>. Track multiple accounts, manage transactions, set monthly budgets, and receive real-time budget alert emails.
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/Next.js-16-black?logo=next.js" alt="Next.js" />
   <img src="https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb&logoColor=white" alt="MongoDB" />
   <img src="https://img.shields.io/badge/Clerk-Auth-6C47FF?logo=clerk&logoColor=white" alt="Clerk" />
-  <img src="https://img.shields.io/badge/Inngest-Background%20Jobs-5865F2?logo=data:image/svg+xml;base64,&logoColor=white" alt="Inngest" />
-
-  <img src="https://img.shields.io/badge/Resend-Email-000000?logo=resend&logoColor=white" alt="Resend" />
+  <img src="https://img.shields.io/badge/Resend-Email-000000?logoColor=white" alt="Resend" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-3-38BDF8?logo=tailwindcss&logoColor=white" alt="Tailwind" />
 </p>
 
 <p align="center">
@@ -37,175 +36,157 @@
 
 ### 📊 Smart Dashboard
 - Real-time overview of **Total Balance**, **Monthly Income**, and **Monthly Expenses**
-- Data computed server-side using **Next.js Server Components** — zero client-side API calls for initial load
-- Budget progress bar with automatic threshold detection
+- Data fetched server-side using **Next.js Server Components** — zero client-side fetch calls on initial load
+- Budget progress bar with automatic 80% threshold detection
 
 ### 💳 Multi-Account Management
 - Create and manage multiple accounts (**Savings** / **Current**)
-- Set a **default account** — all dashboard calculations are tied to it
-- Real-time balance updates on every transaction (atomic operations via **MongoDB sessions**)
+- Set a **default account** — all budget calculations are tied to it
+- Real-time balance updates on every transaction via **MongoDB sessions** (ACID guaranteed)
 
 ### 📝 Full Transaction CRUD
-- Add, edit, and delete transactions with **category tagging**, **descriptions**, and **date picker**
-- All balance mutations are wrapped in **Mongoose sessions** to ensure **ACID** data consistency
-- **Bulk delete** — select and remove multiple transactions at once with proper balance reversal
+- Add, edit, and delete transactions with **category tagging**, **description**, and **date picker**
+- All balance mutations are wrapped in **Mongoose sessions** — if any step fails, the whole operation rolls back
+- **Bulk delete** — select and remove multiple transactions at once with automatic balance reversal
+- Mark transactions as **recurring** (Daily / Weekly / Monthly / Yearly) — stored in DB with `nextRecurringDate`
 
-### 🔁 Automated Recurring Transactions
-- Mark any transaction as recurring: **Daily** / **Weekly** / **Monthly** / **Yearly**
-- `nextRecurringDate` is auto-calculated based on the selected interval
-- Processed automatically via **Inngest cron jobs** running daily at midnight
-- Includes **throttling** (10 txns/min per user) and **retry with exponential backoff** to handle failures gracefully
+### 💰 Monthly Budget
+- Set a monthly budget directly from the dashboard
+- Real-time progress bar shows current month's spending vs budget
+- Updates instantly using **Server Actions** + `revalidatePath`
 
-### 🚨 Smart Budget Alerts
-- Set a monthly budget from the dashboard
-- When spending crosses **80%**, a real-time email alert is dispatched instantly via **Resend**
-- Budget alerts are fired **synchronously** on transaction creation for immediate feedback
-- Inngest also runs a **background check every 6 hours** as a safety net
-
-### 📧 Automated Monthly Financial Reports
-- On the **1st of every month**, Inngest triggers automated report generation
-- Each user receives an email with: **income summary**, **expense breakdown by category**, and **spending insights**
-- Emails are beautifully rendered using **React Email** (`@react-email/components`)
+### 🚨 Real-Time Budget Alerts
+- When spending crosses **80%** of monthly budget, an alert email is sent instantly via **Resend**
+- Alert fires on the same request as transaction creation — no delay
+- Uses **React Email** template for a clean, formatted email
+- Maximum **one alert per calendar month** — no duplicate emails
 
 ### 📈 Interactive Charts
 - Per-account **income vs expense bar charts** powered by **Recharts**
-- Rendered on individual account pages for granular financial analysis
+- Available on individual account detail pages
 
-### 🔒 Authentication & Security
-- Fully managed via **Clerk** — supports Google OAuth, email/password, and more
-- **Middleware-protected routes** — unauthenticated users are redirected automatically
-- User data is synced between Clerk and MongoDB via a custom `checkUser` utility
+### 🔒 Authentication & Route Protection
+- Fully managed via **Clerk** — supports Google OAuth, email/password
+- `middleware.js` automatically redirects unauthenticated users away from `/dashboard`, `/account`, `/transaction`
+- Clerk user synced to MongoDB via `lib/checkUser.js`
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| **Framework** | Next.js 16 (App Router) | Server Components, Server Actions, file-based routing |
+| **Language** | JavaScript (ES2024) | Full-stack — same language frontend and backend |
+| **Styling** | Tailwind CSS 3 | Utility-first CSS framework |
+| **Database** | MongoDB Atlas + Mongoose | NoSQL database — 4 models: User, Account, Transaction, Budget |
+| **Auth** | Clerk | Authentication, OAuth, session, middleware route guard |
+| **Email** | Resend + React Email | Budget alert emails via transactional email API |
+| **Charts** | Recharts | Income vs expense bar charts per account |
+| **UI Components** | Radix UI + shadcn/ui | Dialog, Select, Checkbox, Popover, Drawer, Switch, Progress |
+| **Icons** | Lucide React | Icon set used across all pages |
+| **Notifications** | Sonner | Toast notifications on form submissions |
+| **Date Utility** | date-fns | Date formatting and calculations |
 
 ---
 
 ## 🏗️ Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                        FRONTEND                             │
-│  Next.js 16 (App Router + React 19 + Turbopack)            │
-│  ┌──────────┐  ┌──────────┐  ┌───────────┐  ┌───────────┐ │
-│  │Dashboard │  │ Accounts │  │Transaction│  │  Budget   │ │
-│  │  Page    │  │  Page    │  │   Form    │  │ Progress  │ │
-│  └────┬─────┘  └────┬─────┘  └─────┬─────┘  └─────┬─────┘ │
-│       │              │              │              │       │
-│       ▼              ▼              ▼              ▼       │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │           Next.js Server Actions Layer              │   │
-│  │  dashboard.js │ account.js │ transaction.js │ budget │   │
-│  └───────────────────────┬─────────────────────────────┘   │
-└──────────────────────────┼──────────────────────────────────┘
-                           │
-              ┌────────────┼────────────┐
-              ▼            ▼            ▼
-     ┌──────────────┐ ┌────────┐ ┌──────────┐
-     │  MongoDB     │ │ Clerk  │ │  Resend  │
-     │  Atlas       │ │  Auth  │ │  Email   │
-     │  (Mongoose)  │ │        │ │          │
-     └──────┬───────┘ └────────┘ └──────────┘
-            │
-            ▼
-  ┌──────────────────────────────────────────┐
-  │         INNGEST (Background Jobs)        │
-  │                                          │
-  │  ⏰ Daily     → Process recurring txns   │
-  │  ⏰ Monthly   → Generate monthly reports   │
-  │  ⏰ Every 6h  → Check budget alerts      │
-  │                                          │
-  │  Features: Retry, Throttling, Batching   │
-  └──────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                        BROWSER (Frontend)                        │
+│  Next.js 16 — React 19 — Tailwind CSS — Radix UI — Recharts    │
+│                                                                   │
+│  Server Components (data fetch)  +  Client Components (UI/UX)   │
+└───────────────────────────┬─────────────────────────────────────┘
+                            │ HTTP Request (page visit)
+                            ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                      NEXT.JS SERVER                              │
+│                                                                   │
+│  middleware.js  →  Clerk Auth Guard  →  Route Allow / Block     │
+│                                                                   │
+│  ┌──────────────────────────────────────────────────────────┐   │
+│  │                SERVER ACTIONS (/actions)                  │   │
+│  │  dashboard.js   → getUserAccounts, createAccount         │   │
+│  │  account.js     → getAccount, bulkDelete, setDefault     │   │
+│  │  transaction.js → create, update, get, list              │   │
+│  │  budget.js      → getCurrentBudget, updateBudget         │   │
+│  │  budget-alert.js→ sendBudgetAlertEmail (80% trigger)     │   │
+│  │  send-email.js  → Resend wrapper                         │   │
+│  └──────────────────────────────┬───────────────────────────┘   │
+└─────────────────────────────────┼───────────────────────────────┘
+                                  │ Mongoose queries
+                                  ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    MONGODB ATLAS (Database)                       │
+│                                                                   │
+│   User  |  Account  |  Transaction  |  Budget                   │
+└──────────────────────────┬──────────────────────────────────────┘
+                           │ (on budget alert)
+                           ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    RESEND (Email Service)                         │
+│   Sends budget alert email via React Email template              │
+└─────────────────────────────────────────────────────────────────┘
 ```
-
----
-
-## 🛠️ Tech Stack
-
-| Layer | Technology | Why This Choice |
-|-------|-----------|-----------------|
-| **Framework** | [Next.js 16](https://nextjs.org/) (App Router) | Server Components, Server Actions, Turbopack for fast DX |
-| **Language** | JavaScript (ES2024) | Full-stack JS — no context switching |
-| **Styling** | [Tailwind CSS](https://tailwindcss.com/) | Utility-first, rapid prototyping |
-| **Database** | [MongoDB Atlas](https://www.mongodb.com/atlas) + [Mongoose](https://mongoosejs.com/) | Flexible schemas, Atlas for managed hosting |
-| **Auth** | [Clerk](https://clerk.com/) | Drop-in auth with OAuth, webhooks, and user management |
-| **Background Jobs** | [Inngest](https://www.inngest.com/) | Serverless-friendly cron + event queue with built-in retry/throttling |
-
-| **Email** | [Resend](https://resend.com/) + [React Email](https://react.email/) | Transactional emails with beautiful React-rendered templates |
-| **Charts** | [Recharts](https://recharts.org/) | Composable, responsive SVG charts for React |
-| **UI Components** | [Radix UI](https://www.radix-ui.com/) + [shadcn/ui](https://ui.shadcn.com/) | Accessible, unstyled primitives with custom theming |
 
 ---
 
 ## 🗂️ Project Structure
 
 ```
-fintrack/
+FinTrackNew/
 ├── app/
-│   ├── (auth)/                  # Clerk sign-in / sign-up pages
+│   ├── (auth)/                   # Clerk sign-in / sign-up pages
 │   ├── (main)/
-│   │   ├── dashboard/           # Main dashboard: accounts, budget, overview
-│   │   ├── account/[id]/        # Per-account: balance, chart, transaction table
-│   │   └── transaction/         # Add / Edit transaction form
+│   │   ├── dashboard/            # Main dashboard page (Server Component)
+│   │   ├── account/[id]/         # Per-account: balance, chart, transactions
+│   │   └── transaction/          # Add / Edit transaction form
 │   ├── api/
-│   │   ├── inngest/             # Inngest webhook handler (serves background functions)
-│   │   ├── scan-receipt/        # Receipt scan endpoint
-│   │   └── seed/                # DB seed route for development
-│   ├── layout.js                # Root layout with Clerk provider & theme
-│   └── page.js                  # Landing / Hero page
+│   │   └── seed/                 # Dev-only DB seeder
+│   ├── layout.js                 # Root layout (Clerk provider + theme)
+│   └── page.js                   # Landing / Hero page
 │
-├── actions/                     # Next.js Server Actions
-│   ├── dashboard.js             # getUserAccounts, createAccount, getDashboardData
-│   ├── account.js               # getAccountWithTransactions, bulkDeleteTransactions
-│   ├── transaction.js           # createTransaction, updateTransaction, getTransaction
-│   ├── budget.js                # getCurrentBudget, updateBudget
-│   ├── budget-alert.js          # sendBudgetAlertEmail (synchronous, on-demand)
-│   └── send-email.js            # Resend wrapper for all transactional emails
+├── actions/                      # Next.js Server Actions ("use server")
+│   ├── dashboard.js              # getUserAccounts, createAccount, getDashboardData
+│   ├── account.js                # getAccountWithTransactions, bulkDeleteTransactions, updateDefaultAccount
+│   ├── transaction.js            # createTransaction, updateTransaction, getTransaction, getUserTransactions
+│   ├── budget.js                 # getCurrentBudget, updateBudget
+│   ├── budget-alert.js           # sendBudgetAlertEmail — fires on 80% spend
+│   ├── send-email.js             # Resend wrapper
+│   └── seed.js                   # Dev-only fake data generator
 │
-├── models/                      # Mongoose schemas (MongoDB)
-│   ├── User.js                  # name, email, clerkUserId, imageUrl
-│   ├── Account.js               # name, type, balance, isDefault, userId
-│   ├── Transaction.js           # type, amount, category, isRecurring, nextRecurringDate
-│   └── Budget.js                # amount, lastAlertSent, userId
+├── models/                       # Mongoose schemas (MongoDB)
+│   ├── User.js                   # name, email, clerkUserId, imageUrl
+│   ├── Account.js                # name, type, balance, isDefault, userId
+│   ├── Transaction.js            # type, amount, category, isRecurring, nextRecurringDate, userId
+│   └── Budget.js                 # amount, lastAlertSent, userId
 │
 ├── lib/
-│   ├── mongoose.js              # Cached MongoDB connection (prevents hot-reload leaks)
-│   ├── checkUser.js             # Clerk ↔ MongoDB user sync utility
-│   └── inngest/
-│       ├── client.js            # Inngest client initialization
-│       └── function.js          # All background job definitions (4 functions)
+│   ├── mongoose.js               # Cached MongoDB connection (no hot-reload leaks)
+│   ├── checkUser.js              # Clerk ↔ MongoDB user sync on every protected page
+│   ├── utils.js                  # cn() helper (clsx + tailwind-merge)
+│   └── formatCurrency.js         # Indian Rupee (INR) formatter
 │
 ├── emails/
-│   └── template.jsx             # React Email templates (budget-alert, monthly-report)
+│   └── template.jsx              # React Email template (budget-alert)
 │
 ├── components/
-│   ├── header.jsx               # Navigation header with Clerk user button
-│   ├── hero.jsx                 # Landing page hero section
-│   ├── create-account-drawer.jsx # Slide-up drawer for new account creation
-│   └── ui/                      # Shared UI primitives (shadcn/ui + Radix)
+│   ├── header.jsx                # Navigation header with Clerk UserButton
+│   ├── hero.jsx                  # Landing page hero section
+│   ├── create-account-drawer.jsx # Drawer for new account creation
+│   └── ui/                       # Shared UI primitives (Radix / shadcn)
 │
-├── hooks/                       # Custom React hooks
-├── data/                        # Static data (landing page content)
-└── middleware.js                 # Clerk auth middleware (route protection)
+├── hooks/
+│   └── use-fetch.js              # Custom hook: wraps Server Actions with loading/error state
+│
+├── data/
+│   ├── landing.js                # Static content for landing page
+│   └── categories.js             # Transaction category list
+│
+└── middleware.js                  # Clerk auth middleware — protects /dashboard, /account, /transaction
 ```
-
----
-
-## ⚙️ Background Jobs (Inngest)
-
-Inngest acts as the **background job orchestrator** — handling scheduled tasks that run independently of user requests.
-
-| Function | Trigger | What It Does |
-|----------|---------|-------------|
-| `triggerRecurringTransactions` | `cron: 0 0 * * *` (Daily midnight) | Finds all due recurring transactions and dispatches processing events |
-| `processRecurringTransaction` | Event: `transaction.recurring.process` | Creates the new transaction, updates account balance, calculates next due date |
-| `generateMonthlyReports` | `cron: 0 0 1 * *` (1st of month) | Generates per-user financial reports with spending insights, sends via email |
-| `checkBudgetAlerts` | `cron: 0 */6 * * *` (Every 6 hours) | Checks spending vs budget, sends alert email if ≥ 80% used |
-
-**Why Inngest over alternatives?**
-- ✅ **Serverless-compatible** — works natively with Next.js, no separate server needed
-- ✅ **Built-in retry** with exponential backoff — handles transient failures automatically
-- ✅ **Per-user throttling** — prevents overwhelming the system with bulk operations
-- ✅ **Event batching** — efficiently processes large numbers of recurring transactions
-- ✅ **Observability** — built-in dashboard for monitoring job execution
 
 ---
 
@@ -217,8 +198,6 @@ Inngest acts as the **background job orchestrator** — handling scheduled tasks
 - **MongoDB Atlas** cluster ([Create free](https://www.mongodb.com/atlas))
 - **Clerk** application ([Sign up](https://clerk.com/))
 - **Resend** account ([Sign up](https://resend.com/))
-- **Inngest** account ([Sign up](https://www.inngest.com/)) — for background jobs
-
 
 ### Installation
 
@@ -236,24 +215,17 @@ npm install
 Create a `.env` file in the root directory:
 
 ```env
-# Database
-DATABASE_URL=mongodb+srv://<user>:<password>@cluster.mongodb.net/fintrack
-
 # Clerk Authentication
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_...
 CLERK_SECRET_KEY=sk_...
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=sign-up
 
-# Inngest (Background Jobs)
-INNGEST_API_KEY=...
-INNGEST_EVENT_KEY=...
-INNGEST_SIGNING_KEY=...
+# Database (MongoDB)
+DATABASE_URL=mongodb+srv://<user>:<password>@cluster.mongodb.net/fintrack
 
-# Resend (Email)
+# Email (Resend) — for budget alert emails
 RESEND_API_KEY=re_...
-
-
 ```
 
 ### Run Development Server
@@ -264,7 +236,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Preview React Email Templates
+### Preview Email Templates
 
 ```bash
 npm run email
@@ -276,30 +248,11 @@ npm run email
 
 | Decision | Rationale |
 |----------|-----------|
-| **Server Actions over API Routes** | Reduces boilerplate, provides type-safe server mutations, and works seamlessly with React 19's `useActionState` |
-| **MongoDB Sessions for Transactions** | Ensures atomicity — if a transaction creation fails mid-way, the account balance is never left in an inconsistent state |
-| **Inngest over node-cron** | Serverless-compatible, built-in retry/throttling, and doesn't require a persistent server process |
-| **Clerk over NextAuth** | Zero-config OAuth, built-in UI components, webhook support for user sync, and better DX |
-| **React Email for templates** | Component-based email design with TypeScript support, preview server, and consistent rendering across email clients |
-| **Mongoose over Prisma (Migration)** | Flexible schema design for MongoDB, better aggregation pipeline support, and native MongoDB session handling |
-
----
-
-## 📋 API Endpoints
-
-| Method | Route | Purpose |
-|--------|-------|---------|
-| `GET/POST/PUT` | `/api/inngest` | Inngest webhook handler — serves all background functions |
-| `POST` | `/api/scan-receipt` | Receipt scanner endpoint |
-| `GET` | `/api/seed` | Development-only database seeder |
-
-> 💡 Most data mutations happen through **Server Actions** (`/actions/*`), not API routes — following Next.js 16 best practices.
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
+| **Server Actions over API Routes** | No boilerplate — direct server mutations from client, `revalidatePath` auto-refreshes UI |
+| **MongoDB Sessions for mutations** | ACID guarantee — if balance update fails mid-way, transaction creation rolls back. Used in `createTransaction` and `bulkDeleteTransactions` |
+| **Clerk over NextAuth** | Zero-config OAuth, built-in sign-in UI, easy Clerk ↔ MongoDB user sync |
+| **Resend + React Email** | Transactional budget alert emails with component-based React templates |
+| **Server Components for data fetch** | Dashboard data fetched on server — no loading spinners, no client fetch, instant page render |
 
 ---
 
