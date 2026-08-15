@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { Pencil, Check, X, AlertTriangle, Bell } from "lucide-react";
-import useFetch from "@/hooks/use-fetch";
+import useFetch from "@/frontend/hooks/use-fetch";
 import { toast } from "sonner";
-import { updateBudget } from "@/actions/budget";
-import { sendBudgetAlertEmail } from "@/actions/budget-alert";
-import { formatCurrency } from "@/lib/formatCurrency";
+import { updateBudget } from "@/backend/actions/budget";
+import { sendBudgetAlertEmail } from "@/backend/actions/budget-alert";
+import { formatCurrency } from "@/backend/lib/formatCurrency";
 
 export function BudgetProgress({ initialBudget, currentExpenses }) {
   const [isEditing, setIsEditing] = useState(false);

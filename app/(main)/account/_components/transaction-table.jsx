@@ -17,7 +17,7 @@ import {
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { formatCurrency } from "@/lib/formatCurrency";
+import { formatCurrency } from "@/backend/lib/formatCurrency";
 
 import {
   Table,
@@ -26,33 +26,33 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
+} from "@/frontend/components/ui/table";
+import { Input } from "@/frontend/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/frontend/components/ui/select";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Button } from "@/components/ui/button";
+} from "@/frontend/components/ui/dropdown-menu";
+import { Checkbox } from "@/frontend/components/ui/checkbox";
+import { Button } from "@/frontend/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
-import { bulkDeleteTransactions } from "@/actions/account";
-import useFetch from "@/hooks/use-fetch";
+} from "@/frontend/components/ui/tooltip";
+import { cn } from "@/backend/lib/utils";
+import { bulkDeleteTransactions } from "@/backend/actions/account";
+import useFetch from "@/frontend/hooks/use-fetch";
 import { BarLoader } from "react-spinners";
 
 const ITEMS_PER_PAGE = 10;

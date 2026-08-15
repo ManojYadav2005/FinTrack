@@ -18,8 +18,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { formatCurrency } from "@/lib/formatCurrency";
+} from "@/frontend/components/ui/select";
+import { formatCurrency } from "@/backend/lib/formatCurrency";
 
 const DATE_RANGES = {
   "7D": { label: "Last 7 Days", days: 7 },

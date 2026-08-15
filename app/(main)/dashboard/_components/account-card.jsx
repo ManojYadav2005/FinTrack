@@ -1,13 +1,13 @@
 "use client";
 
 import { ArrowUpRight, ArrowDownRight, CreditCard } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
+import { Switch } from "@/frontend/components/ui/switch";
 import { useEffect } from "react";
-import useFetch from "@/hooks/use-fetch";
+import useFetch from "@/frontend/hooks/use-fetch";
 import Link from "next/link";
-import { updateDefaultAccount } from "@/actions/account";
+import { updateDefaultAccount } from "@/backend/actions/account";
 import { toast } from "sonner";
-import { formatCurrency } from "@/lib/formatCurrency";
+import { formatCurrency } from "@/backend/lib/formatCurrency";
 
 export function AccountCard({ account }) {
   const { name, type, balance, id, isDefault } = account;

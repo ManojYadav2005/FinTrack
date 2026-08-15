@@ -1,12 +1,12 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/frontend/components/ui/button";
 import {
   featuresData,
   howItWorksData,
   statsData,
   testimonialsData,
-} from "@/data/landing";
-import HeroSection from "@/components/hero";
+} from "@/frontend/data/landing";
+import HeroSection from "@/frontend/components/hero";
 import Link from "next/link";
 import Image from "next/image";
 

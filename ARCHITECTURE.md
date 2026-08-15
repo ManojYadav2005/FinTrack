@@ -26,14 +26,63 @@ Is goal ko 5 layers mein toda gaya:
 npx create-next-app@latest FinTrack
 ```
 
-**Kya mila:**
+**Kya mila (aur baad mein restructure kiya):**
 ```
 FinTrackNew/
-├── app/              ← Pages aur Layouts (App Router)
-├── public/           ← Static files (images, logo)
-├── middleware.js     ← Har request se pehle chalta hai
-└── next.config.mjs  ← Next.js config
+│
+├── app/                    ← Next.js Pages, Layouts, API Routes (ROOT — MOVE NAHI HO SAKTA)
+│   ├── (auth)/             ← Sign-in, Sign-up pages
+│   ├── (main)/             ← Dashboard, Account, Transaction pages
+│   ├── api/inngest/        ← Inngest webhook endpoint
+│   ├── globals.css         ← Global styles
+│   ├── layout.js           ← Root layout
+│   └── page.js             ← Landing page
+│
+├── frontend/               ← Saara UI-related code
+│   ├── components/         ← Reusable React components
+│   │   ├── ui/             ← Shadcn UI base components
+│   │   ├── header.jsx
+│   │   ├── hero.jsx
+│   │   └── create-account-drawer.jsx
+│   ├── hooks/              ← Custom React hooks
+│   │   └── use-fetch.js
+│   └── data/               ← Static UI data (categories, landing content)
+│       ├── categories.js
+│       └── landing.js
+│
+├── backend/                ← Saara server/database-related code
+│   ├── actions/            ← Server Actions (Controller layer)
+│   │   ├── account.js
+│   │   ├── budget.js
+│   │   ├── budget-alert.js
+│   │   ├── dashboard.js
+│   │   ├── send-email.js
+│   │   └── transaction.js
+│   ├── models/             ← MongoDB Mongoose Schemas
+│   │   ├── Account.js
+│   │   ├── Budget.js
+│   │   ├── Transaction.js
+│   │   └── User.js
+│   ├── lib/                ← Utility functions aur DB connection
+│   │   ├── mongoose.js     ← MongoDB connection
+│   │   ├── checkUser.js    ← Clerk user sync
+│   │   ├── formatCurrency.js
+│   │   ├── utils.js
+│   │   └── inngest/        ← Background job definitions
+│   │       ├── client.js
+│   │       └── function.js
+│   └── emails/             ← React Email templates
+│       └── template.jsx
+│
+├── public/                 ← Static assets
+├── middleware.js           ← Auth middleware (ROOT — MOVE NAHI HO SAKTA)
+└── next.config.mjs         ← Next.js config
 ```
+
+**Restructure kyun kiya?**
+- **frontend/** → Sab jo browser mein dikhta hai (components, hooks, static data)
+- **backend/** → Sab jo server par chalta hai (DB models, actions/controllers, emails)
+- **app/** → Next.js ka core routing (isko root mein rehna zaroori hai)
 
 **App Router kyun?**
 - Server Components → page load pe zero JS bundle
@@ -343,7 +392,7 @@ flowchart TD
     subgraph CRON2["1st of Month — Monthly Report"]
         M1[generateMonthlyReports] --> M2[Saare users fetch karo]
         M2 --> M3[Pichle mahine ka data nikalo]
-        M3 --> M4[Financial insights generate karo]
+        M3 --> M4[Gemini AI se 3 insights generate karo]
         M4 --> M5[React Email template render karo]
         M5 --> M6[Resend se email bhejo]
     end
@@ -471,6 +520,9 @@ Browser → Middleware (Clerk guard) → Next.js Pages (Server Components)
 
 ---
 
+
+
+
 ## 🔗 Frontend ↔ Backend Connection — Interview Wala Flow
 
 > **Sabse important concept:** Is project mein koi alag backend server nahi hai.
@@ -478,6 +530,7 @@ Browser → Middleware (Clerk guard) → Next.js Pages (Server Components)
 > Lekin concept wahi hai — data jaata hai, process hota hai, wapas aata hai.
 
 ---
+
 
 ### 🧠 Pehle Concept Samjho — Traditional vs Next.js
 
@@ -776,6 +829,6 @@ UI update ho jaata hai — BINA PAGE REFRESH KE!
 **Q: "Background jobs kaise implement kiye?"**
 > Inngest use kiya hai. Teen cron jobs hain:
 > 1. Daily midnight: Recurring transactions process karo
-> 2. Monthly 1st: Financial report email bhejo (income/expense summary ke saath)
+> 2. Monthly 1st: Financial report email bhejo (Gemini AI insights ke saath)
 > 3. Har 6 ghante: Budget alerts check karo
 > Inngest serverless hai — alag background server rakhne ki zarurat nahi.

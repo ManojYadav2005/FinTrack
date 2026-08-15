@@ -4,30 +4,30 @@ import { useState, useEffect } from "react";
 import { CalendarIcon, Loader2 } from "lucide-react";
 import { format } from "date-fns";
 import { useRouter, useSearchParams } from "next/navigation";
-import useFetch from "@/hooks/use-fetch";
+import useFetch from "@/frontend/hooks/use-fetch";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { formatCurrency } from "@/lib/formatCurrency";
+import { Button } from "@/frontend/components/ui/button";
+import { Input } from "@/frontend/components/ui/input";
+import { Switch } from "@/frontend/components/ui/switch";
+import { formatCurrency } from "@/backend/lib/formatCurrency";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/frontend/components/ui/select";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
-import { CreateAccountDrawer } from "@/components/create-account-drawer";
-import { cn } from "@/lib/utils";
-import { createTransaction, updateTransaction } from "@/actions/transaction";
-import { ReceiptScanner } from "./recipt-scanner";
+} from "@/frontend/components/ui/popover";
+import { Calendar } from "@/frontend/components/ui/calendar";
+import { CreateAccountDrawer } from "@/frontend/components/create-account-drawer";
+import { cn } from "@/backend/lib/utils";
+import { createTransaction, updateTransaction } from "@/backend/actions/transaction";
+
 
 function FieldLabel({ children }) {
   return (
@@ -109,14 +109,7 @@ export function AddTransactionForm({ accounts, categories, editMode = false, ini
     setErrors({});
   };
 
-  const handleScanComplete = (scannedData) => {
-    if (scannedData) {
-      if (scannedData.amount) setAmount(scannedData.amount.toString());
-      if (scannedData.date) setDate(new Date(scannedData.date));
-      if (scannedData.description) setDescription(scannedData.description);
-      if (scannedData.category) setCategory(scannedData.category);
-    }
-  };
+
 
   useEffect(() => {
     if (transactionResult?.success && !transactionLoading) {
@@ -131,25 +124,7 @@ export function AddTransactionForm({ accounts, categories, editMode = false, ini
   return (
     <div className="simple-card overflow-hidden">
       <form onSubmit={onSubmit} className="p-6 space-y-5">
-        {/* 
-          AI Receipt Scanner — HIDDEN (not removed).
-          To re-enable, uncomment the block below and the feature will work as before.
-          The <ReceiptScanner> component and /api/scan-receipt route are still intact.
-        */}
-        {/* {!editMode && (
-          <div>
-            <ReceiptScanner onScanComplete={handleScanComplete} />
-          </div>
-        )} */}
 
-        {/* "or enter manually" divider — hidden along with scanner */}
-        {/* {!editMode && (
-          <div className="flex items-center gap-3">
-            <div className="flex-1 h-px bg-slate-200" />
-            <span className="text-xs text-slate-400 font-medium">or enter manually</span>
-            <div className="flex-1 h-px bg-slate-200" />
-          </div>
-        )} */}
 
         {/* Type */}
         <div>

@@ -1,13 +1,13 @@
 import { Suspense } from "react";
-import { getUserAccounts } from "@/actions/dashboard";
-import { getDashboardData } from "@/actions/dashboard";
-import { getCurrentBudget } from "@/actions/budget";
+import { getUserAccounts } from "@/backend/actions/dashboard";
+import { getDashboardData } from "@/backend/actions/dashboard";
+import { getCurrentBudget } from "@/backend/actions/budget";
 import { AccountCard } from "./_components/account-card";
-import { CreateAccountDrawer } from "@/components/create-account-drawer";
+import { CreateAccountDrawer } from "@/frontend/components/create-account-drawer";
 import { BudgetProgress } from "./_components/budget-progress";
 import { DashboardOverview } from "./_components/transaction-overview";
 import { Plus, TrendingUp, TrendingDown, Wallet } from "lucide-react";
-import { formatCurrency } from "@/lib/formatCurrency";
+import { formatCurrency } from "@/backend/lib/formatCurrency";
 
 export default async function DashboardPage() {
   const [accounts, transactions] = await Promise.all([
@@ -101,12 +101,12 @@ export default async function DashboardPage() {
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <CreateAccountDrawer>
-              <div className="simple-card p-6 flex flex-col items-center justify-center cursor-pointer border-dashed border-slate-300 hover:border-blue-400 hover:bg-blue-50 transition-all min-h-[160px] group">
+              <button className="simple-card p-6 flex flex-col items-center justify-center cursor-pointer border-dashed border-slate-300 hover:border-blue-400 hover:bg-blue-50 transition-all min-h-[160px] group w-full">
                 <div className="w-12 h-12 rounded-xl bg-slate-100 group-hover:bg-blue-100 flex items-center justify-center mb-3 transition-all">
                   <Plus className="h-5 w-5 text-slate-400 group-hover:text-blue-500 transition-colors" />
                 </div>
                 <p className="text-sm text-slate-500 group-hover:text-blue-600 font-medium transition-colors">Add Account</p>
-              </div>
+              </button>
             </CreateAccountDrawer>
             {accounts?.length > 0 &&
               accounts.map((account) => (

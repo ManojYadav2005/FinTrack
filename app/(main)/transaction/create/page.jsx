@@ -1,9 +1,9 @@
 // correct code
 
-import { getUserAccounts } from "@/actions/dashboard";
-import { defaultCategories } from "@/data/categories";
+import { getUserAccounts } from "@/backend/actions/dashboard";
+import { defaultCategories } from "@/frontend/data/categories";
 import { AddTransactionForm } from "../_components/transaction-form";
-import { getTransaction } from "@/actions/transaction";
+import { getTransaction } from "@/backend/actions/transaction";
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
 
@@ -103,10 +103,10 @@ export default async function AddTransactionPage({ searchParams }) {
 
 // // app/(main)/transaction/create/page.jsx
 
-// import { getUserAccounts } from "@/actions/dashboard";
-// import { defaultCategories } from "@/data/categories";
+// import { getUserAccounts } from "@/backend/actions/dashboard";
+// import { defaultCategories } from "@/frontend/data/categories";
 // import { AddTransactionForm } from "../_components/transaction-form";
-// import { getTransaction } from "@/actions/transaction";
+// import { getTransaction } from "@/backend/actions/transaction";
 // import { Loader2 } from "lucide-react";
 
 // export const dynamic = "force-dynamic";
@@ -176,10 +176,10 @@ export default async function AddTransactionPage({ searchParams }) {
 
 
 
-// import { getUserAccounts } from "@/actions/dashboard";
-// import { defaultCategories } from "@/data/categories";
+// import { getUserAccounts } from "@/backend/actions/dashboard";
+// import { defaultCategories } from "@/frontend/data/categories";
 // import AddTransactionForm from "../_components/transaction-form"; // ✅ FIXED default import
-// import { getTransaction } from "@/actions/transaction";
+// import { getTransaction } from "@/backend/actions/transaction";
 // import { Suspense } from "react";
 // import { Loader2 } from "lucide-react";
 

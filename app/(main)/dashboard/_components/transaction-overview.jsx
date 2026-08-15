@@ -10,9 +10,9 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { cn } from "@/lib/utils";
-import { formatCurrency } from "@/lib/formatCurrency";
+} from "@/frontend/components/ui/select";
+import { cn } from "@/backend/lib/utils";
+import { formatCurrency } from "@/backend/lib/formatCurrency";
 
 const COLORS = ["#3b82f6", "#06b6d4", "#22c55e", "#f59e0b", "#8b5cf6", "#ef4444", "#ec4899"];
 
