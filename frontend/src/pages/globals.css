@@ -1,0 +1,181 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   FINTRACK — Clean, Simple Theme
+   ============================================================ */
+
+:root {
+  /* Core palette */
+  --bg-root:        #f8fafc;
+  --bg-surface:     #ffffff;
+  --bg-card:        #ffffff;
+  --bg-card-hover:  #f1f5f9;
+
+  /* Accent */
+  --accent-blue:    #2563eb;
+  --accent-blue-light: #3b82f6;
+  --accent-green:   #16a34a;
+  --accent-red:     #dc2626;
+  --accent-amber:   #d97706;
+
+  /* Text */
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-muted:     #94a3b8;
+
+  /* Borders */
+  --border-subtle:  #e2e8f0;
+  --border-default: #cbd5e1;
+
+  /* Shadcn tokens */
+  --background:     0 0% 98%;
+  --foreground:     222 47% 7%;
+  --card:           0 0% 100%;
+  --card-foreground: 222 47% 7%;
+  --popover:        0 0% 100%;
+  --popover-foreground: 222 47% 7%;
+  --primary:        221 83% 53%;
+  --primary-foreground: 0 0% 100%;
+  --secondary:      210 40% 96%;
+  --secondary-foreground: 222 47% 11%;
+  --muted:          210 40% 96%;
+  --muted-foreground: 215 16% 47%;
+  --accent:         210 40% 96%;
+  --accent-foreground: 222 47% 11%;
+  --destructive:    0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border:         214 32% 91%;
+  --input:          214 32% 91%;
+  --ring:           221 83% 53%;
+  --chart-1:        221 83% 53%;
+  --chart-2:        173 58% 39%;
+  --chart-3:        30 80% 55%;
+  --chart-4:        280 65% 60%;
+  --chart-5:        340 75% 55%;
+  --radius:         0.5rem;
+}
+
+/* ============================================================
+   BASE RESETS
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: var(--bg-root);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ============================================================
+   KEYFRAME ANIMATIONS
+   ============================================================ */
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ============================================================
+   UTILITY CLASSES
+   ============================================================ */
+
+@layer utilities {
+
+  .gradient-title {
+    @apply font-bold;
+    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Simple card */
+  .simple-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    transition: box-shadow 0.2s, border-color 0.2s;
+  }
+  .simple-card:hover {
+    border-color: #bfdbfe;
+    box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+  }
+
+  /* Animations */
+  .animate-slide-up { animation: slide-up 0.4s ease-out both; }
+  .animate-fade-in  { animation: fade-in 0.3s ease-out both; }
+}
+
+/* ============================================================
+   HERO IMAGE
+   ============================================================ */
+
+.hero-image-wrapper {
+  perspective: 1200px;
+}
+
+.hero-image {
+  transform: rotateX(8deg) scale(1);
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.hero-image.scrolled {
+  transform: rotateX(0deg) scale(1) translateY(20px);
+}
+
+/* ============================================================
+   PROGRESS BAR OVERRIDES
+   ============================================================ */
+
+[role="progressbar"] > div {
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}

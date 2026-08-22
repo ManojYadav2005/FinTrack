@@ -1,0 +1,29 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node --watch index.js",
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@clerk/express": "^2.1.61",
+    "@react-email/components": "^1.0.12",
+    "@react-email/render": "^2.1.0",
+    "cors": "^2.8.6",
+    "date-fns": "^4.4.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "inngest": "^4.18.1",
+    "mongoose": "^9.9.3",
+    "nodemailer": "^9.0.5",
+    "resend": "^6.22.0",
+    "uuid": "^14.0.2"
+  }
+}

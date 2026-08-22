@@ -4,6 +4,77 @@
 
 ---
 
+## 🔄 MERN Stack Migration (August 2026)
+
+**Status:** ✅ Complete
+
+The project has been fully migrated from a Next.js monolith to a traditional **MERN Stack** (MongoDB, Express, React, Node.js).
+
+### New Project Structure
+
+```
+FinTrackNew/
+│
+├── backend/                  ← Node.js + Express Backend (PORT 5000)
+│   ├── index.js              ← Entry point: Express app, Clerk middleware, DB connect
+│   ├── routes/               ← API route definitions
+│   │   ├── authRoutes.js     ← POST /api/auth/sync (user creation in MongoDB)
+│   │   ├── accountRoutes.js  ← GET/POST /api/accounts/*
+│   │   ├── budgetRoutes.js   ← GET/POST /api/budgets
+│   │   ├── dashboardRoutes.js← GET /api/dashboard/*
+│   │   └── transactionRoutes.js ← GET/POST/PUT /api/transactions/*
+│   ├── controllers/          ← Business logic for each resource
+│   ├── models/               ← Mongoose schemas (User, Account, Budget, Transaction)
+│   ├── lib/                  ← Shared utilities (mongoose.js, formatCurrency.js, etc.)
+│   └── package.json          ← `npm run dev` to start with Node watch mode
+│
+├── frontend/                 ← React + Vite Frontend (PORT 5173)
+│   ├── src/
+│   │   ├── App.jsx           ← React Router setup + Protected Routes + Clerk auth sync
+│   │   ├── main.jsx          ← ClerkProvider + QueryClientProvider + Toaster
+│   │   ├── pages/            ← Route-level page components
+│   │   │   ├── LandingPage.jsx
+│   │   │   ├── DashboardPage.jsx
+│   │   │   ├── AccountPage.jsx
+│   │   │   ├── TransactionPage.jsx
+│   │   │   ├── NotFoundPage.jsx
+│   │   │   ├── dashboard/    ← Dashboard sub-components
+│   │   │   ├── account/      ← Account sub-components
+│   │   │   └── transaction/  ← Transaction form
+│   │   ├── components/       ← Shared UI components (Header, Drawers, Radix UI)
+│   │   ├── lib/
+│   │   │   ├── api.js        ← Central Axios API client (all backend calls)
+│   │   │   ├── utils.js      ← cn() tailwind helper
+│   │   │   └── formatCurrency.js
+│   │   ├── hooks/
+│   │   │   └── use-fetch.js  ← Generic loading/error hook for API calls
+│   │   └── data/             ← Static data (categories, landing page content)
+│   └── package.json          ← `npm run dev` to start Vite
+│
+└── package.json              ← `npm run dev` → starts BOTH backend + frontend concurrently
+```
+
+### How Authentication Works (Clerk + Express)
+
+```
+1. User signs in via Clerk (frontend — @clerk/clerk-react)
+2. App.jsx calls /api/auth/sync with Clerk JWT → creates User in MongoDB
+3. Every API request includes `Authorization: Bearer <clerk-token>` header
+4. Express uses clerkMiddleware() to verify token → populates req.auth.userId
+5. requireAuth() middleware protects all API routes
+```
+
+### How to Run
+
+```bash
+# From root directory:
+npm run dev   # Starts server (port 5000) + client (port 5173) concurrently
+```
+
+---
+
+
+
 ## 🧭 Sabse Pehle — Soch kya thi?
 
 **Goal:** Ek aisa app banao jahan user apni income aur expenses track kar sake, multiple accounts manage kar sake, budget set kar sake, aur jab budget cross ho toh **automatically email aaye**.
