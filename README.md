@@ -1,24 +1,24 @@
 <p align="center">
-  <img src="public/logo1.png" alt="FinTrack Logo" width="80" />
+  <img src="frontend/public/logo1.png" alt="FinTrack Logo" width="80" />
 </p>
 
 <h1 align="center">FinTrack — Personal Finance Platform</h1>
 
 <p align="center">
-  A full-stack personal finance dashboard built with <strong>Next.js 16</strong>, <strong>MongoDB</strong>, and <strong>Clerk</strong>. Track multiple accounts, manage transactions, set monthly budgets, and receive real-time budget alert emails.
+  A full-stack personal finance dashboard built with the <strong>MERN Stack (Vite + React, Node.js, Express, MongoDB)</strong> and <strong>Clerk</strong>. Track multiple accounts, manage transactions, set monthly budgets, and receive real-time budget alert emails.
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Next.js-16-black?logo=next.js" alt="Next.js" />
+  <img src="https://img.shields.io/badge/Vite-B73BFE?logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/React-20232A?logo=react&logoColor=61DAFB" alt="React" />
+  <img src="https://img.shields.io/badge/Express.js-404D59?logo=express" alt="Express.js" />
+  <img src="https://img.shields.io/badge/Node.js-339933?logo=nodedotjs&logoColor=white" alt="Node.js" />
   <img src="https://img.shields.io/badge/MongoDB-Atlas-47A248?logo=mongodb&logoColor=white" alt="MongoDB" />
   <img src="https://img.shields.io/badge/Clerk-Auth-6C47FF?logo=clerk&logoColor=white" alt="Clerk" />
-  <img src="https://img.shields.io/badge/Resend-Email-000000?logoColor=white" alt="Resend" />
   <img src="https://img.shields.io/badge/Tailwind_CSS-3-38BDF8?logo=tailwindcss&logoColor=white" alt="Tailwind" />
 </p>
 
 <p align="center">
-  <a href="https://fin-track-bzpr.vercel.app" target="_blank"><img src="https://img.shields.io/badge/🚀_Live_Demo-Visit_App-blue?style=for-the-badge" alt="Live Demo" /></a>
-  &nbsp;
   <a href="https://github.com/ManojYadav2005/FinTrack" target="_blank"><img src="https://img.shields.io/badge/📂_Source_Code-GitHub-181717?style=for-the-badge&logo=github" alt="GitHub" /></a>
 </p>
 
@@ -27,7 +27,7 @@
 ## 📸 Preview
 
 <p align="center">
-  <img src="public/banner.jpeg" alt="FinTrack Dashboard Preview" width="100%" />
+  <img src="frontend/public/banner.jpeg" alt="FinTrack Dashboard Preview" width="100%" />
 </p>
 
 ---
@@ -36,7 +36,7 @@
 
 ### 📊 Smart Dashboard
 - Real-time overview of **Total Balance**, **Monthly Income**, and **Monthly Expenses**
-- Data fetched server-side using **Next.js Server Components** — zero client-side fetch calls on initial load
+- Data fetched efficiently using **React Query** and **Axios**
 - Budget progress bar with automatic 80% threshold detection
 
 ### 💳 Multi-Account Management
@@ -53,12 +53,11 @@
 ### 💰 Monthly Budget
 - Set a monthly budget directly from the dashboard
 - Real-time progress bar shows current month's spending vs budget
-- Updates instantly using **Server Actions** + `revalidatePath`
+- Instantly syncs state with the Express Backend
 
 ### 🚨 Real-Time Budget Alerts
 - When spending crosses **80%** of monthly budget, an alert email is sent instantly via **Resend**
-- Alert fires on the same request as transaction creation — no delay
-- Uses **React Email** template for a clean, formatted email
+- Uses a lightweight HTML template generated directly on the Node.js server
 - Maximum **one alert per calendar month** — no duplicate emails
 
 ### 📈 Interactive Charts
@@ -66,9 +65,9 @@
 - Available on individual account detail pages
 
 ### 🔒 Authentication & Route Protection
-- Fully managed via **Clerk** — supports Google OAuth, email/password
-- `middleware.js` automatically redirects unauthenticated users away from `/dashboard`, `/account`, `/transaction`
-- Clerk user synced to MongoDB via `lib/checkUser.js`
+- Fully managed via **Clerk React** and **Clerk Express**
+- JWT Bearer tokens are automatically passed to the backend via Axios interceptors
+- Clerk user synced to MongoDB on login
 
 ---
 
@@ -76,17 +75,15 @@
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
-| **Framework** | Next.js 16 (App Router) | Server Components, Server Actions, file-based routing |
-| **Language** | JavaScript (ES2024) | Full-stack — same language frontend and backend |
-| **Styling** | Tailwind CSS 3 | Utility-first CSS framework |
+| **Frontend** | Vite + React 18 | Client-side UI and routing (`react-router-dom`) |
+| **Backend** | Node.js + Express | RESTful API server handling all business logic |
 | **Database** | MongoDB Atlas + Mongoose | NoSQL database — 4 models: User, Account, Transaction, Budget |
-| **Auth** | Clerk | Authentication, OAuth, session, middleware route guard |
-| **Email** | Resend + React Email | Budget alert emails via transactional email API |
-| **Charts** | Recharts | Income vs expense bar charts per account |
+| **Auth** | Clerk | Authentication, OAuth, JWT validation |
+| **Data Fetching**| TanStack Query + Axios | API calls, caching, loading states, token injection |
+| **Styling** | Tailwind CSS 3 | Utility-first CSS framework |
 | **UI Components** | Radix UI + shadcn/ui | Dialog, Select, Checkbox, Popover, Drawer, Switch, Progress |
-| **Icons** | Lucide React | Icon set used across all pages |
-| **Notifications** | Sonner | Toast notifications on form submissions |
-| **Date Utility** | date-fns | Date formatting and calculations |
+| **Email** | Resend | Budget alert emails via transactional email API |
+| **Charts** | Recharts | Income vs expense bar charts per account |
 
 ---
 
@@ -94,26 +91,24 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                        BROWSER (Frontend)                        │
-│  Next.js 16 — React 19 — Tailwind CSS — Radix UI — Recharts    │
+│                        FRONTEND (Vite + React)                   │
+│  Pages, UI Components, React Query (Data Fetching), Tailwind   │
 │                                                                   │
-│  Server Components (data fetch)  +  Client Components (UI/UX)   │
+│  [Axios Interceptor injects Clerk JWT into headers]              │
 └───────────────────────────┬─────────────────────────────────────┘
-                            │ HTTP Request (page visit)
+                            │ HTTP GET/POST/PUT/DELETE
                             ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                      NEXT.JS SERVER                              │
+│                      BACKEND (Node + Express)                    │
 │                                                                   │
-│  middleware.js  →  Clerk Auth Guard  →  Route Allow / Block     │
+│  clerkMiddleware() verifies JWT and extracts userId              │
 │                                                                   │
 │  ┌──────────────────────────────────────────────────────────┐   │
-│  │                SERVER ACTIONS (/actions)                  │   │
-│  │  dashboard.js   → getUserAccounts, createAccount         │   │
-│  │  account.js     → getAccount, bulkDelete, setDefault     │   │
-│  │  transaction.js → create, update, get, list              │   │
-│  │  budget.js      → getCurrentBudget, updateBudget         │   │
-│  │  budget-alert.js→ sendBudgetAlertEmail (80% trigger)     │   │
-│  │  send-email.js  → Resend wrapper                         │   │
+│  │                     API ROUTES                            │   │
+│  │  /api/dashboard → dashboardController                    │   │
+│  │  /api/accounts  → accountController                      │   │
+│  │  /api/transactions → transactionController               │   │
+│  │  /api/budgets   → budgetController                       │   │
 │  └──────────────────────────────┬───────────────────────────┘   │
 └─────────────────────────────────┼───────────────────────────────┘
                                   │ Mongoose queries
@@ -127,7 +122,7 @@
                            ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                    RESEND (Email Service)                         │
-│   Sends budget alert email via React Email template              │
+│   Sends budget alert HTML email to user                          │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -137,55 +132,29 @@
 
 ```
 FinTrackNew/
-├── app/
-│   ├── (auth)/                   # Clerk sign-in / sign-up pages
-│   ├── (main)/
-│   │   ├── dashboard/            # Main dashboard page (Server Component)
-│   │   ├── account/[id]/         # Per-account: balance, chart, transactions
-│   │   └── transaction/          # Add / Edit transaction form
-│   ├── api/
-│   │   └── seed/                 # Dev-only DB seeder
-│   ├── layout.js                 # Root layout (Clerk provider + theme)
-│   └── page.js                   # Landing / Hero page
+├── backend/                      # Node.js + Express Backend
+│   ├── index.js                  # Entry point, Express setup, middlewares
+│   ├── routes/                   # Express routes (auth, accounts, budgets, etc.)
+│   ├── controllers/              # Business logic for API endpoints
+│   ├── models/                   # Mongoose schemas
+│   ├── lib/                      # Utilities (mongoose.js, send-email.js)
+│   ├── emails/                   # HTML Email templates
+│   └── package.json
 │
-├── actions/                      # Next.js Server Actions ("use server")
-│   ├── dashboard.js              # getUserAccounts, createAccount, getDashboardData
-│   ├── account.js                # getAccountWithTransactions, bulkDeleteTransactions, updateDefaultAccount
-│   ├── transaction.js            # createTransaction, updateTransaction, getTransaction, getUserTransactions
-│   ├── budget.js                 # getCurrentBudget, updateBudget
-│   ├── budget-alert.js           # sendBudgetAlertEmail — fires on 80% spend
-│   ├── send-email.js             # Resend wrapper
-│   └── seed.js                   # Dev-only fake data generator
+├── frontend/                     # React + Vite Frontend
+│   ├── src/
+│   │   ├── App.jsx               # React Router & Auth Wrapper
+│   │   ├── main.jsx              # Providers (Clerk, React Query)
+│   │   ├── pages/                # Route-level components (Dashboard, Account, etc.)
+│   │   ├── components/           # Shared UI (Header, Hero, shadcn ui components)
+│   │   ├── lib/                  # Axios setup (api.js), formatCurrency, utils
+│   │   └── data/                 # Static content
+│   ├── tailwind.config.js
+│   ├── vite.config.js
+│   └── package.json
 │
-├── models/                       # Mongoose schemas (MongoDB)
-│   ├── User.js                   # name, email, clerkUserId, imageUrl
-│   ├── Account.js                # name, type, balance, isDefault, userId
-│   ├── Transaction.js            # type, amount, category, isRecurring, nextRecurringDate, userId
-│   └── Budget.js                 # amount, lastAlertSent, userId
-│
-├── lib/
-│   ├── mongoose.js               # Cached MongoDB connection (no hot-reload leaks)
-│   ├── checkUser.js              # Clerk ↔ MongoDB user sync on every protected page
-│   ├── utils.js                  # cn() helper (clsx + tailwind-merge)
-│   └── formatCurrency.js         # Indian Rupee (INR) formatter
-│
-├── emails/
-│   └── template.jsx              # React Email template (budget-alert)
-│
-├── components/
-│   ├── header.jsx                # Navigation header with Clerk UserButton
-│   ├── hero.jsx                  # Landing page hero section
-│   ├── create-account-drawer.jsx # Drawer for new account creation
-│   └── ui/                       # Shared UI primitives (Radix / shadcn)
-│
-├── hooks/
-│   └── use-fetch.js              # Custom hook: wraps Server Actions with loading/error state
-│
-├── data/
-│   ├── landing.js                # Static content for landing page
-│   └── categories.js             # Transaction category list
-│
-└── middleware.js                  # Clerk auth middleware — protects /dashboard, /account, /transaction
+├── package.json                  # Root: runs both servers via 'concurrently'
+└── ARCHITECTURE.md               # Detailed architecture guide
 ```
 
 ---
@@ -206,20 +175,23 @@ FinTrackNew/
 git clone https://github.com/ManojYadav2005/FinTrack.git
 cd FinTrack
 
-# Install dependencies
-npm install
+# Install all dependencies (Frontend + Backend)
+npm run install:all
 ```
 
 ### Environment Variables
 
-Create a `.env` file in the root directory:
+Create a `.env` file in the **root** directory:
 
 ```env
-# Clerk Authentication
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_...
+# Clerk Authentication (VITE_ for frontend, CLERK_ for backend)
+VITE_CLERK_PUBLISHABLE_KEY=pk_...
+CLERK_PUBLISHABLE_KEY=pk_...
 CLERK_SECRET_KEY=sk_...
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=sign-in
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=sign-up
+VITE_CLERK_SIGN_IN_URL=/sign-in
+VITE_CLERK_SIGN_UP_URL=/sign-up
+VITE_CLERK_AFTER_SIGN_IN_URL=/dashboard
+VITE_CLERK_AFTER_SIGN_UP_URL=/dashboard
 
 # Database (MongoDB)
 DATABASE_URL=mongodb+srv://<user>:<password>@cluster.mongodb.net/fintrack
@@ -230,29 +202,14 @@ RESEND_API_KEY=re_...
 
 ### Run Development Server
 
+To start both the Express backend and Vite frontend simultaneously:
+
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### Preview Email Templates
-
-```bash
-npm run email
-```
-
----
-
-## 🧠 Key Technical Decisions
-
-| Decision | Rationale |
-|----------|-----------|
-| **Server Actions over API Routes** | No boilerplate — direct server mutations from client, `revalidatePath` auto-refreshes UI |
-| **MongoDB Sessions for mutations** | ACID guarantee — if balance update fails mid-way, transaction creation rolls back. Used in `createTransaction` and `bulkDeleteTransactions` |
-| **Clerk over NextAuth** | Zero-config OAuth, built-in sign-in UI, easy Clerk ↔ MongoDB user sync |
-| **Resend + React Email** | Transactional budget alert emails with component-based React templates |
-| **Server Components for data fetch** | Dashboard data fetched on server — no loading spinners, no client fetch, instant page render |
+- **Frontend:** [http://localhost:5173](http://localhost:5173)
+- **Backend API:** [http://localhost:5000](http://localhost:5000)
 
 ---
 
